@@ -18,9 +18,9 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-module sub(
-
-    );
+module sub #(parameter DATAWIDTH = 8)(a, b, diff);
+    input [DATAWIDTH-1:0] a, b;
+    output [DATAWIDTH-1:0] diff;
+    
+    assign diff = a - b; 
 endmodule
