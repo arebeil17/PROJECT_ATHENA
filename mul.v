@@ -18,9 +18,10 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-module mul(
-
-    );
+module mul #(parameter DATAWIDTH = 8) ( a, b, mul);
+    input [DATAWIDTH-1:0] a, b;
+    output [DATAWIDTH-1:0] mul;
+        
+    assign mul = a * b;
+    
 endmodule
