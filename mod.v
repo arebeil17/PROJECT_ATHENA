@@ -18,9 +18,9 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-module mod(
-
-    );
+module mod #(parameter DATAWIDTH = 8) ( a, b, rem);
+    input [DATAWIDTH-1:0] a, b;
+    output [DATAWIDTH-1:0] rem;
+    
+    assign rem = a%b;
 endmodule

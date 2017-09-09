@@ -18,9 +18,9 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-module div(
-
-    );
+module div #(parameter DATAWIDTH = 8) ( a, b, quot);
+    input [DATAWIDTH-1:0] a, b;
+    output [DATAWIDTH-1:0] quot;
+    
+    assign quot = a/b;
 endmodule
