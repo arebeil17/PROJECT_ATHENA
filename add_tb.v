@@ -23,8 +23,7 @@ module add_tb();
     parameter datawidth = 4;
     reg[datawidth-1:0] a, b;
     wire[datawidth-1:0] sum;
-    
-    
+   
     add #(.DATAWIDTH(datawidth))adder_test(a, b, sum);
     
     initial begin

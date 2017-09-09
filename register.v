@@ -23,7 +23,7 @@ module register #(DATAWIDTH = 8)(Clk, Rst, d, q);
     input [DATAWIDTH-1:0] d;
     output reg [DATAWIDTH-1:0] q;
     
-    always @(Clk, Rst) begin
+    always @(posedge Clk) begin
         if(Rst == 1) begin
             q <= 0;
         end
