@@ -20,7 +20,15 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mux2x1(
+module mux2x1 #(DATAWIDTH = 8)(a, b, sel, d);
 
-    );
+input [DATAWIDTH-1:0]a,b;
+input sel;
+output reg [DATAWIDTH-1:0] d;
+
+always@(sel, a, b)
+begin
+if (sel==0) d<=a;
+else d<=b; 
+end
 endmodule

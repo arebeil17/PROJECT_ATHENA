@@ -20,7 +20,15 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module shr(
+module shr #(DATAWIDTH=8)(a, sh_amt, d);
 
-    );
+input [DATAWIDTH-1:0] a, sh_amt;
+reg i=0;
+output reg [DATAWIDTH-1:0] d; 
+
+always@(a, sh_amt)
+begin
+d=a>>sh_amt;
+end
+
 endmodule
