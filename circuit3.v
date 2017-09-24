@@ -85,6 +85,6 @@ module circuit3  ( a, b, c, d, e, f, g, h, sa, avg);
 
 
     assign avg=l2div8[15:0];
->>>>>>> origin/master
+//>>>>>>> origin/master
 
 endmodule
