@@ -29,8 +29,8 @@ wire gEQz, gLT, gGT;
 
 parameter bw64=64;
 
-sub #(.DATAWIDTH(bw64)) sub_1(a,1,e);
-add #(.DATAWIDTH(bw64)) add_1(c,1,f);
+dec #(.DATAWIDTH(bw64)) dec_1(a,e);
+inc #(.DATAWIDTH(bw64)) inc_1(c,f);
 mod #(.DATAWIDTH(bw64)) mod_1(a,c,g);
 
 comp #(.DATAWIDTH(bw64)) comp_1(g,zero,gGT, gLT ,gEQz);
