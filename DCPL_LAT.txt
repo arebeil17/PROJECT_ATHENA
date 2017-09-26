@@ -1,5 +1,5 @@
 ComponentName : Latency2bit Latency8bit Latency16bit Latency32bitc Latency64bit
-adder : 5.361 6.384 6.618 7.086 8.022
+add : 5.361 6.384 6.618 7.086 8.022
 mul : 5.355 8.624 9.052 12.975 17.103
 sub : 5.361 6.384 6.498 7.086 8.022
 register : 4.090 4.090 4.090 4.090 4.090
