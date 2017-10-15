@@ -17,6 +17,8 @@
 #include <string>
 #include <math.h>
 #include <cstdio>
+#include "node.h"
+#include "net.h"
 
 /**************************************************************************************************/
 using namespace std;
@@ -24,8 +26,24 @@ using namespace std;
 class Datapath { 
 	
 	public:
+		// Variables
+		vector<string>* netlistLines;
+		vector<Net>  netListVector;
+		vector<Node> nodeListVector;
+
+		//Custom constructors
+		Datapath(vector<string>* netlistLines);
+
+
 		//Default Constructor
 		Datapath();
+
+		int createNetList(string* nowParsingText, string type, int width, bool signedBit);
+		bool createNodeInputs(string* nowParsingText, vector<Net*>* inputNets);
+		int parseNetlistLines();
+
+		void printNodeListVector();
+
 };
  
 #endif //DATAPATH_H

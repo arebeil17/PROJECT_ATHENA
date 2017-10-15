@@ -23,9 +23,16 @@ using namespace std;
 
 class Net { 
 	
+	private:
+	
 	public:
-		//Default Constructor
 		Net();
+		// Variables
+		string name;
+		int width;
+		string type;
+		bool signedBit;
+		//Functions
 };
 #endif //NET_H
 

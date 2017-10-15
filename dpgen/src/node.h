@@ -1,5 +1,5 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef Node_H
+#define Node_H
 /*************/
 /*
  * File: Node.h
@@ -17,16 +17,27 @@
 #include <string>
 #include <math.h>
 #include <cstdio>
+#include "net.h"
 
 /**************************************************************************************************/
 using namespace std;
 
 class Node { 
 	
+	private:
 	public:
-		//Default Constructor
 		Node();
+		// Variables
+		string op;
+		float delay = 0.0;
+		int width = 0;
+		vector<Node*> parentNodes;
+		vector<Node*> childNodes;
+		vector<Net*> inputs;
+		Net* output;
+		//Functions
+		string toString();
 };
  
-#endif //NODE_H
+#endif //Node_H
 

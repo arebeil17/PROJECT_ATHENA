@@ -13,12 +13,11 @@
 #include <string>
 #include <iomanip>
 #include "input.h"
-#include "nodeList.h"
+#include "datapath.h"
 /**************************************************************************************************/
 
 //To recompile on cloud9 with dependencies:  
 // g++ /home/ubuntu/workspace/dpgen/src/main.cpp /home/ubuntu/workspace/dpgen/src/input.cpp  
-
 //To run on cloud9 in terminal enter: ./a.out /home/ubuntu/workspace/dpgen/test/circuit1.txt 
 
 int main(int argc, char *argv[]) {
@@ -32,14 +31,16 @@ int main(int argc, char *argv[]) {
 	}
 	else {
 		Input input;
+		
 		if(input.readInputFile(argv[1])) {
 			//for debugging prints out file read 
 			for (unsigned int i = 0; i < input.netlistLines.size(); i++) {
-				cout << input.netlistLines[i] << endl;
+				cout << input.netlistLines.at(i) << endl;
 			}
-			nodeList* nodeList_o1 = new nodeList(&(input.netlistLines));
-			nodeList_o1->parseNetlistLines();
-			delete nodeList_o1;
+			Datapath datapath = Datapath(&(input.netlistLines));
+			datapath.parseNetlistLines();
+			
+			datapath.printNodeListVector();
 		}
 		else {
 			return -1;
