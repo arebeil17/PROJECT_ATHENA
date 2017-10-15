@@ -177,6 +177,13 @@ int Datapath::parseNetlistLines() {
 			else if ((pos = nowParsingText.find(keyWord = "* ")) != std::string::npos) {
 				op = "MUL";
 			}
+            else if ((pos = nowParsingText.find(keyWord = ">> ")) != std::string::npos) {
+				op = "SHR";
+			}
+			else if ((pos = nowParsingText.find(keyWord = "<< ")) != std::string::npos) {
+				op = "SHL";
+			}
+
 			else if ((pos = nowParsingText.find(keyWord = "== ")) != std::string::npos) {
 				op = "COMP_EQ";
 			}
@@ -191,12 +198,6 @@ int Datapath::parseNetlistLines() {
 				pos = nowParsingText.find(keyWord = ": ");
 				op = "MUX2x1";
 			}
-			else if ((pos = nowParsingText.find(keyWord = ">> ")) != std::string::npos) {
-				op = "SHR";
-			}
-			else if ((pos = nowParsingText.find(keyWord = "<< ")) != std::string::npos) {
-				op = "SHL";
-			}
 			else if ((pos = nowParsingText.find(keyWord = "/ ")) != std::string::npos) {
 				op = "DIV";
 			}
@@ -209,12 +210,11 @@ int Datapath::parseNetlistLines() {
 			else if ((pos = nowParsingText.find(keyWord = " - 1")) != std::string::npos) {
 				op = "DEC";
 			}
-			else {
+			else if (op==""){
 				keyWord = "";
 				op = "WIRE";
 			}
 			//Only need to perform this once
-			nowParsingText.erase(pos, keyWord.length());
 			createNodeInputs(&nowParsingText, &inputNets);
 
 			Node  newNode;
