@@ -27,23 +27,23 @@ int main(int argc, char *argv[]) {
     *  provide a simple usage message to assist user
     */
     if(argc != 2){
-        cout << "\nUsage: " << argv[0] << "netlistFile verilogFile" << endl;
+        cout << "\nUsage: " << argv[0] << " netlistFile verilogFile" << endl;
         return -1;
-    }
-    // Read circuit text files
-    Input input;
-    if(input.readInputFile(argv[1])){
-        //for debugging prints out file read 
-        for(unsigned int i = 0; i < input.netlistLines.size(); i++){
-            cout << input.netlistLines[i] << endl;
-        }
-    }
-    else{
-        return -1;
-    }
-    nodeList* nodeList_o1 = new nodeList(&(input.netlistLines));
-    nodeList_o1->parseNetlistLines();
-    delete nodeList_o1;
-
+	}
+	else {
+		Input input;
+		if(input.readInputFile(argv[1])) {
+			//for debugging prints out file read 
+			for (unsigned int i = 0; i < input.netlistLines.size(); i++) {
+				cout << input.netlistLines[i] << endl;
+			}
+			nodeList* nodeList_o1 = new nodeList(&(input.netlistLines));
+			nodeList_o1->parseNetlistLines();
+			delete nodeList_o1;
+		}
+		else {
+			return -1;
+		}
+	}
     return 0;
 }
