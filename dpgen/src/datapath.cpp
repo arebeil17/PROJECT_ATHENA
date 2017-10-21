@@ -13,7 +13,7 @@
 //Default Constructor
 Datapath::Datapath()
 {
-
+	maxBitwidth = 0;
 }
 /**************************************************************************************************/
 //Customer constructor
@@ -235,5 +235,11 @@ void Datapath::printNodeListVector() {
 		cout << "Node " + to_string(i) + ": Type: " + this->nodeListVector.at(i).op << endl; 
 		cout << "	"<<this->nodeListVector.at(i).toString() << endl;
 		cout << "--------------------------------------------------------------------------" << endl;
+	}
+}
+/**************************************************************************************************/
+void Datapath::updateNodeDelays() {
+	for (int i = 0; i < this->nodeListVector.size(); i++) {
+		nodeListVector.at(i).width = nodeListVector.at(i).output->width;
 	}
 }

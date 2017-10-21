@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 			}
 			Datapath datapath = Datapath(&(input.netlistLines));
 			datapath.parseNetlistLines();
-			
+			datapath.updateNodeDelays();
 			datapath.printNodeListVector();
 		}
 		else {

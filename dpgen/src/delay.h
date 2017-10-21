@@ -17,7 +17,7 @@
 #define REG_8B 2.879
 #define REG_16B 3.061
 #define REG_32B 3.602
-#define REG_64b 3.966
+#define REG_64B 3.966
 //ADDER DELAY
 #define ADD_1B 2.704
 #define ADD_2B 3.713

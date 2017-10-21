@@ -19,7 +19,6 @@
 #include <cstdio>
 #include "node.h"
 #include "net.h"
-#include "delay.h"
 
 /**************************************************************************************************/
 using namespace std;
@@ -31,7 +30,7 @@ class Datapath {
 		vector<string>* netlistLines;
 		vector<Net>  netListVector;
 		vector<Node> nodeListVector;
-
+		int maxBitwidth;
 		//Custom constructors
 		Datapath(vector<string>* netlistLines);
 
@@ -45,6 +44,7 @@ class Datapath {
 
 		void printNodeListVector();
 
+		void updateNodeDelays();
 };
  
 #endif //DATAPATH_H
