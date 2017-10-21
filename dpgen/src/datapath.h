@@ -19,6 +19,7 @@
 #include <cstdio>
 #include "node.h"
 #include "net.h"
+#include "delay.h"
 
 /**************************************************************************************************/
 using namespace std;

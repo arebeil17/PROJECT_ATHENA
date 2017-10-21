@@ -230,6 +230,7 @@ int Datapath::parseNetlistLines() {
 }
 /**************************************************************************************************/
 void Datapath::printNodeListVector() {
+	cout << endl;
 	for (int i = 0; i < this->nodeListVector.size(); i++) {
 		cout << "Node " + to_string(i) + ": Type: " + this->nodeListVector.at(i).op << endl; 
 		cout << "	"<<this->nodeListVector.at(i).toString() << endl;
