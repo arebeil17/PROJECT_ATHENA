@@ -233,7 +233,7 @@ int Datapath::parseNetlistLines() {
 /**************************************************************************************************/
 void Datapath::printNodeListVector() {
 	cout << endl;
-	for (int i = 0; i < this->nodeListVector.size(); i++) {
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		cout << "Node id: " + to_string(this->nodeListVector.at(i).id) + " Type: " + this->nodeListVector.at(i).op << endl;
 		cout << "	"<<this->nodeListVector.at(i).toString() << endl;
 		cout << "--------------------------------------------------------------------------" << endl;
@@ -241,25 +241,25 @@ void Datapath::printNodeListVector() {
 }
 /**************************************************************************************************/
 void Datapath::updateAllNodeBitwidth() {
-	for (int i = 0; i < this->nodeListVector.size(); i++) {
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		nodeListVector.at(i).width = nodeListVector.at(i).output->width;
 	}
 }
 /**************************************************************************************************/
 //Update all node delays based off bitwidth
 void Datapath::updateAllNodeDelay(){
-	for (int i = 0; i < this->nodeListVector.size(); i++) {
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		nodeListVector.at(i).updateDelay();
 	}
 }
 /**************************************************************************************************/
 //Find Root Nodes
 bool Datapath::findRootNodes() {
-	int nodeInputCount = 0;
+	unsigned int nodeInputCount = 0;
 
-	for (int i = 0; i < this->nodeListVector.size(); i++) {
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		//Check all node inputs are of type input net
-		for(int j = 0; j < this->nodeListVector.at(i).inputs.size(); j++) {
+		for(unsigned int j = 0; j < this->nodeListVector.at(i).inputs.size(); j++) {
 			if (!this->nodeListVector.at(i).inputs.at(j)->type.compare("input"))
 				nodeInputCount++;
 		}
@@ -283,13 +283,13 @@ float Datapath::determineCriticalPath(){
 
 	
 	//Determine path delay for each root/source node
-	for (int i = 0; i < this->rootNodes.size(); i++) {
+	for (unsigned int i = 0; i < this->rootNodes.size(); i++) {
 		//Perform BFS on source node
 		breadthFirstSearch(this->rootNodes.at(i));
 	}
 	
 	Node* finalNode;
-	for (int i = 0; i < this->nodeListVector.size(); i++) {
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		float pathDelay = nodeListVector.at(i).pathDelay + nodeListVector.at(i).delay;
 		if (criticalDelay < pathDelay) {
 			criticalDelay = pathDelay;
@@ -326,7 +326,7 @@ void Datapath::breadthFirstSearch(Node* source) {
 			
 			expandNode(currentNode);
 
-			for (int i = 0; i < currentNode->childNodes.size(); i++) {
+			for (unsigned int i = 0; i < currentNode->childNodes.size(); i++) {
 				if (currentNode->childNodes.at(i)->visited == false)
 					nodeQueue.push(currentNode->childNodes.at(i));
 			}
@@ -339,15 +339,15 @@ void Datapath::breadthFirstSearch(Node* source) {
 //Expand current node by updating path delay and setting it's children
 bool Datapath::expandNode(Node* currentNode) {
 	if (currentNode != NULL) {
-		bool root = (std::find(rootNodes.begin(), rootNodes.end(), currentNode) != rootNodes.end());
-		for (int i = 0; i < this->nodeListVector.size(); i++) {
+		bool root = (find(rootNodes.begin(), rootNodes.end(), currentNode) != rootNodes.end());
+		for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 			
 			if (currentNode->id != this->nodeListVector.at(i).id) {
 				//set parents
 				//if not a root node update parent nodes
 				if (!root) {
 					//check if current nodes inputs match another nodes outputs
-					for (int k = 0; k < currentNode->inputs.size(); k++) {
+					for (unsigned int k = 0; k < currentNode->inputs.size(); k++) {
 						//compare input net name with output net name
 						if (!currentNode->inputs.at(k)->name.compare(this->nodeListVector.at(i).output->name)) {
 							//if parent hasn't been added yet, add parent node
@@ -363,11 +363,11 @@ bool Datapath::expandNode(Node* currentNode) {
 				}
 				//set childs
 				//check if current node's output matchs another node's inputs
-				for (int k = 0; k < this->nodeListVector.at(i).inputs.size(); k++) {
+				for (unsigned int k = 0; k < this->nodeListVector.at(i).inputs.size(); k++) {
 					//compare input net name with output net name
 					if (!this->nodeListVector.at(i).inputs.at(k)->name.compare(currentNode->output->name)) {
 						//if parent hasn't been added yet, add parent node
-						if (std::find(currentNode->childNodes.begin(),
+						if (find(currentNode->childNodes.begin(),
 									  currentNode->childNodes.end(),
 									  &this->nodeListVector.at(i))
 									  == currentNode->childNodes.end()) {
@@ -380,7 +380,7 @@ bool Datapath::expandNode(Node* currentNode) {
 		}
 		//Update max path delay to node
 		float max = 0.0;
-		for (int i = 0; i < currentNode->parentNodes.size(); i++) {
+		for (unsigned int i = 0; i < currentNode->parentNodes.size(); i++) {
 			float pathDelay = currentNode->parentNodes.at(i)->pathDelay + currentNode->parentNodes.at(i)->delay;
 			if (max < pathDelay) {
 				max = pathDelay;
@@ -398,7 +398,7 @@ bool Datapath::expandNode(Node* currentNode) {
 void Datapath::printRootNodes() {
 	cout << endl << "Root Nodes: \n";
 	cout << "--------------------------------------------------------------------------" << endl;
-	for (int i = 0; i < this->rootNodes.size(); i++) {
+	for (unsigned int i = 0; i < this->rootNodes.size(); i++) {
 		cout << "Node id: " + to_string(this->rootNodes.at(i)->id) + " Type: " + this->rootNodes.at(i)->op << endl;
 		cout << "	" << this->rootNodes.at(i)->toString() << endl;
 		cout << "--------------------------------------------------------------------------" << endl;
