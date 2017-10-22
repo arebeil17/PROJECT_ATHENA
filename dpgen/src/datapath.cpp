@@ -115,7 +115,7 @@ int Datapath::parseNetlistLines() {
 				pos = nowParsingText.find(" ");
 				bitWidth = stoi(nowParsingText.substr(0, pos));
 				nowParsingText.erase(0, pos + 1);
-				createNetList(&nowParsingText, "onput", bitWidth, signedBit);
+				createNetList(&nowParsingText, "output", bitWidth, signedBit);
 			}
 		}//Check if Wire
 		else if (nowParsingText.substr(0, 5) == "wire ") {
