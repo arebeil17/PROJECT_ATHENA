@@ -242,7 +242,6 @@ void Datapath::printNodeListVector() {
 }
 /**************************************************************************************************/
 void Datapath::updateAllNodeBitwidth() {
-<<<<<<< HEAD
 	for (int i = 0; i < this->nodeListVector.size(); i++) {
 		//Check if node is not a comparator, bitwidth based of output net width
 		if (this->nodeListVector.at(i).op.find("COMP") == std::string::npos) {

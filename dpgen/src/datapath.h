@@ -29,7 +29,6 @@ using namespace std;
 class Datapath { 
 	
 	public:
-		float registerDelay;
 		float criticalDelay;
 		vector<string>* netlistLines;
 		vector<Net>  netListVector;
