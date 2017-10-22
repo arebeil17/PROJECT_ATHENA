@@ -37,14 +37,18 @@ class Datapath {
 
 		//Default Constructor
 		Datapath();
-
+		//Create Netlist from parsed netlist string and specified parameters
 		int createNetList(string* nowParsingText, string type, int width, bool signedBit);
+		//Create node inputs from parsed string and input net vector
 		bool createNodeInputs(string* nowParsingText, vector<Net*>* inputNets);
+		//Parse all netlist lines read from netlist file
 		int parseNetlistLines();
-
+		//Print information of all nodes created from netlist file
 		void printNodeListVector();
-
-		void updateNodeDelays();
+		//Update each nodes bitwidth based off output
+		void updateNodeBitwidth();
+		//Update all node delays based off bitwidth
+		void updateNodeDelay();
 };
  
 #endif //DATAPATH_H

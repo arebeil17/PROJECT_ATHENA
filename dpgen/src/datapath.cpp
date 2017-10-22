@@ -238,8 +238,14 @@ void Datapath::printNodeListVector() {
 	}
 }
 /**************************************************************************************************/
-void Datapath::updateNodeDelays() {
+void Datapath::updateNodeBitwidth() {
 	for (int i = 0; i < this->nodeListVector.size(); i++) {
 		nodeListVector.at(i).width = nodeListVector.at(i).output->width;
+	}
+}
+//Update all node delays based off bitwidth
+void Datapath::updateNodeDelay(){
+	for (int i = 0; i < this->nodeListVector.size(); i++) {
+		nodeListVector.at(i).updateDelay();
 	}
 }

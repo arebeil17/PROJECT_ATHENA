@@ -18,6 +18,7 @@
 #include <math.h>
 #include <cstdio>
 #include "net.h"
+#include "delay.h"
 
 /**************************************************************************************************/
 using namespace std;
@@ -37,6 +38,13 @@ class Node {
 		Net* output;
 		//Functions
 		string toString();
+		//Set delay
+		bool updateDelay();
+		//Get delay
+		float getDelay();
+		//Get delay
+		float getDelay(string op, int bitwidth);
+
 };
  
 #endif //Node_H
