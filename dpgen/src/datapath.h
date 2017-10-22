@@ -19,6 +19,7 @@
 #include <string>
 #include <math.h>
 #include <cstdio>
+#include <algorithm>
 #include "node.h"
 #include "net.h"
 
