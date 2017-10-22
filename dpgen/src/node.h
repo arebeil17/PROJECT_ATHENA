@@ -29,11 +29,17 @@ class Node {
 	public:
 		Node();
 		// Variables
+		int id;
 		string op;
-		float delay = 0.0;
-		int width = 0;
+		bool visited;
+		bool marked;
+		//Delay to reach node
+		float pathDelay;
+		float delay;
+		int width;
 		vector<Node*> parentNodes;
 		vector<Node*> childNodes;
+		Node* criticalNode;
 		vector<Net*> inputs;
 		Net* output;
 		//Functions

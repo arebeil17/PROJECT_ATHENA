@@ -11,6 +11,8 @@
  */
  /**************************************************************************************************/
 #include <vector>
+#include <queue>
+#include <list>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -27,9 +29,12 @@ class Datapath {
 	
 	public:
 		// Variables
+		float criticalDelay;
 		vector<string>* netlistLines;
 		vector<Net>  netListVector;
 		vector<Node> nodeListVector;
+		vector<Node*> rootNodes;
+		list<Node*> criticalPath;
 		int maxBitwidth;
 		//Custom constructors
 		Datapath(vector<string>* netlistLines);
@@ -46,9 +51,22 @@ class Datapath {
 		//Print information of all nodes created from netlist file
 		void printNodeListVector();
 		//Update each nodes bitwidth based off output
-		void updateNodeBitwidth();
+		void updateAllNodeBitwidth();
 		//Update all node delays based off bitwidth
-		void updateNodeDelay();
+		void updateAllNodeDelay();
+		//Find Root Nodes
+		bool findRootNodes();
+		//Determine critical path of circuit by perform BFS on node graph
+		float determineCriticalPath();
+		//Perform BFS given source node and return maximum path delay
+		void breadthFirstSearch(Node* source);
+		//Expand current node by updating path delay and setting it's children
+		bool expandNode(Node* currentNode);
+		//Print Root Nodes
+		void printRootNodes();
+		//Print critical path info
+		void printCriticalPathInfo();
+		
 };
  
 #endif //DATAPATH_H

@@ -38,10 +38,14 @@ int main(int argc, char *argv[]) {
 				cout << input.netlistLines.at(i) << endl;
 			}
 			Datapath datapath = Datapath(&(input.netlistLines));
+			
 			datapath.parseNetlistLines();
-			datapath.updateNodeBitwidth();
-			datapath.updateNodeDelay();
+			
+			datapath.determineCriticalPath();
+
 			datapath.printNodeListVector();
+			datapath.printRootNodes();
+			datapath.printCriticalPathInfo();
 		}
 		else {
 			return -1;

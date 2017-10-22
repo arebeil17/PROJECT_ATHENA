@@ -11,9 +11,15 @@
 /**************************************************************************************************/
 
 //Default Constructor
-Node::Node()
-{
+Node::Node(){
+	id = 0;
+	pathDelay = 0.0;
+	delay = 0.0;
+	width = 0;
 
+	visited = false;
+	marked = false;
+	criticalNode = NULL;
 }
 /**************************************************************************************************/
 //Returns a string representation of this Node
@@ -24,7 +30,7 @@ string Node::toString() {
 		result += " " + inputs.at(i)->name;
 	}
 	result += " Output: " + output->name;
-	result += " Bitwidth: " + to_string(width) + " Delay: " + to_string(delay);
+	result += " Bitwidth: " + to_string(width) + " Delay: " + to_string(delay) + " Path Delay: " + to_string(pathDelay);
 
 	return result;
 }
