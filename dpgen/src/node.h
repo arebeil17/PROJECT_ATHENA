@@ -37,6 +37,7 @@ class Node {
 		float pathDelay;
 		float delay;
 		int width;
+		int depth;
 		vector<Node*> parentNodes;
 		vector<Node*> childNodes;
 		Node* criticalNode;

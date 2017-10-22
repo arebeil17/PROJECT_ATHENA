@@ -232,7 +232,8 @@ int Datapath::parseNetlistLines() {
 }
 /**************************************************************************************************/
 void Datapath::printNodeListVector() {
-	cout << endl;
+	cout << endl << "All Nodes: \n";
+	cout << "--------------------------------------------------------------------------" << endl;
 	for (int i = 0; i < this->nodeListVector.size(); i++) {
 		cout << "Node id: " + to_string(this->nodeListVector.at(i).id) + " Type: " + this->nodeListVector.at(i).op << endl;
 		cout << "	"<<this->nodeListVector.at(i).toString() << endl;
@@ -242,7 +243,13 @@ void Datapath::printNodeListVector() {
 /**************************************************************************************************/
 void Datapath::updateAllNodeBitwidth() {
 	for (int i = 0; i < this->nodeListVector.size(); i++) {
-		nodeListVector.at(i).width = nodeListVector.at(i).output->width;
+		//Check if node is not a comparator, bitwidth based of output net width
+		if (this->nodeListVector.at(i).op.find("COMP") == std::string::npos) {
+			this->nodeListVector.at(i).width = nodeListVector.at(i).output->width;
+		//else comparator node so bitwidth based off input net width 
+		}else{
+			this->nodeListVector.at(i).width = nodeListVector.at(i).inputs.at(0)->width;
+		}
 	}
 }
 /**************************************************************************************************/
@@ -289,21 +296,34 @@ float Datapath::determineCriticalPath(){
 	}
 	
 	Node* finalNode;
+	float pathDelay = 0.0;
 	for (int i = 0; i < this->nodeListVector.size(); i++) {
-		float pathDelay = nodeListVector.at(i).pathDelay + nodeListVector.at(i).delay;
+		//Check if current node is not a Register
+		if (nodeListVector.at(i).op.compare("REG") != 0) 
+			pathDelay = nodeListVector.at(i).pathDelay + nodeListVector.at(i).delay;
+		else 
+			pathDelay = nodeListVector.at(i).pathDelay;
+		
 		if (criticalDelay < pathDelay) {
 			criticalDelay = pathDelay;
 			finalNode = &nodeListVector.at(i);
 		}
 	}
+
+	createCriticalPathList(finalNode);
+
+	return criticalDelay;
+}
+/**************************************************************************************************/
+//creates critical path list given the final node
+void Datapath::createCriticalPathList(Node* finalNode) {
 	Node* currentNode = finalNode;
 	this->criticalPath.push_front(currentNode);
 	while (currentNode->criticalNode != NULL) {
-		this->criticalPath.push_front(currentNode->criticalNode);
-		//Set current to critical/next node
+		//Set current node to critical/next node
 		currentNode = currentNode->criticalNode;
+		this->criticalPath.push_front(currentNode);
 	}
-	return criticalDelay;
 }
 /**************************************************************************************************/
 //Perform BFS given source node and return maximum path delay
@@ -339,40 +359,42 @@ void Datapath::breadthFirstSearch(Node* source) {
 //Expand current node by updating path delay and setting it's children
 bool Datapath::expandNode(Node* currentNode) {
 	if (currentNode != NULL) {
+		Node* listNode;
 		bool root = (std::find(rootNodes.begin(), rootNodes.end(), currentNode) != rootNodes.end());
 		for (int i = 0; i < this->nodeListVector.size(); i++) {
-			
-			if (currentNode->id != this->nodeListVector.at(i).id) {
+			//pointer for current list node being checked
+			listNode = &this->nodeListVector.at(i);
+			//check that current node and list node are not the same
+			if (currentNode->id != listNode->id) {
 				//set parents
 				//if not a root node update parent nodes
 				if (!root) {
 					//check if current nodes inputs match another nodes outputs
 					for (int k = 0; k < currentNode->inputs.size(); k++) {
 						//compare input net name with output net name
-						if (!currentNode->inputs.at(k)->name.compare(this->nodeListVector.at(i).output->name)) {
+						if (!currentNode->inputs.at(k)->name.compare(listNode->output->name)) {
 							//if parent hasn't been added yet, add parent node
-							
 							if (std::find(currentNode->parentNodes.begin(),
 										  currentNode->parentNodes.end(),
-										  &this->nodeListVector.at(i))
+										  listNode)
 										  == currentNode->parentNodes.end()) {
-								currentNode->parentNodes.push_back(&this->nodeListVector.at(i));
+								currentNode->parentNodes.push_back(listNode);
 							}
 						}
 					}
 				}
 				//set childs
 				//check if current node's output matchs another node's inputs
-				for (int k = 0; k < this->nodeListVector.at(i).inputs.size(); k++) {
+				for (int k = 0; k < listNode->inputs.size(); k++) {
 					//compare input net name with output net name
-					if (!this->nodeListVector.at(i).inputs.at(k)->name.compare(currentNode->output->name)) {
-						//if parent hasn't been added yet, add parent node
+					if (!listNode->inputs.at(k)->name.compare(currentNode->output->name)) {
+						//if child hasn't been added yet, add child node
 						if (std::find(currentNode->childNodes.begin(),
 									  currentNode->childNodes.end(),
-									  &this->nodeListVector.at(i))
+									  listNode)
 									  == currentNode->childNodes.end()) {
-							this->nodeListVector.at(i).marked = true;
-							currentNode->childNodes.push_back(&this->nodeListVector.at(i));
+							listNode->marked = true;
+							currentNode->childNodes.push_back(listNode);
 						}
 					}
 				}
@@ -380,15 +402,22 @@ bool Datapath::expandNode(Node* currentNode) {
 		}
 		//Update max path delay to node
 		float max = 0.0;
+		float pathDelay = 0.0;
+
 		for (int i = 0; i < currentNode->parentNodes.size(); i++) {
-			float pathDelay = currentNode->parentNodes.at(i)->pathDelay + currentNode->parentNodes.at(i)->delay;
-			if (max < pathDelay) {
+			//If parent node is not a Register then include node delay as part of path delay
+			if (currentNode->parentNodes.at(i)->op.compare("REG") != 0)
+				pathDelay = currentNode->parentNodes.at(i)->pathDelay + currentNode->parentNodes.at(i)->delay;
+			else
+				pathDelay = 0.0;
+
+			if (max <= pathDelay) {
 				max = pathDelay;
 				currentNode->criticalNode = currentNode->parentNodes.at(i);
+				currentNode->depth = currentNode->parentNodes.at(i)->depth + 1;
 			}
 		}
 		currentNode->pathDelay = max;
-
 		return true;
 	}
 	return false;
@@ -407,10 +436,12 @@ void Datapath::printRootNodes() {
 /**************************************************************************************************/
 //Print critical path info
 void Datapath::printCriticalPathInfo() {
-	cout << endl << "Critical Path Delay: " + to_string(this->criticalDelay) << " Nodes: " + to_string(criticalPath.size()) <<endl;
+	cout << endl << "Critical Path Nodes: \n";
+	cout << "--------------------------------------------------------------------------" << endl;
+	cout << "Critical Path Delay: " + to_string(this->criticalDelay) << " Nodes: " + to_string(criticalPath.size()) <<endl;
 	cout << "--------------------------------------------------------------------------" << endl;
 	for (std::list<Node*>::iterator it = criticalPath.begin(); it != criticalPath.end(); ++it) {
-		cout << "Node id: " + to_string((*it)->id) + " Type: " + (*it)->op << endl;
+		cout << "Node id: " + to_string((*it)->id) + " Depth: "+ to_string((*it)->depth) +" Type: " + (*it)->op << endl;
 		cout << "	" << (*it)->toString() << endl;
 		cout << "--------------------------------------------------------------------------" << endl;
 	}
