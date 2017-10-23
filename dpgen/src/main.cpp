@@ -17,10 +17,6 @@
 #include "output.h"
 /**************************************************************************************************/
 
-//To recompile on cloud9 with dependencies:  
-// g++ /home/ubuntu/workspace/dpgen/src/main.cpp /home/ubuntu/workspace/dpgen/src/input.cpp  
-//To run on cloud9 in terminal enter: ./a.out /home/ubuntu/workspace/dpgen/test/circuit1.txt 
-
 int main(int argc, char *argv[]) {
     
     /* Check for the correct number of command line arguments. If incorrect

@@ -20,6 +20,7 @@ Node::Node(){
 	visited = false;
 	marked = false;
 	criticalNode = NULL;
+	depth = 0;
 }
 /**************************************************************************************************/
 //Returns a string representation of this Node

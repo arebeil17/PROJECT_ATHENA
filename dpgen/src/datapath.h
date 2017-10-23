@@ -29,7 +29,6 @@ using namespace std;
 class Datapath { 
 	
 	public:
-		// Variables
 		float criticalDelay;
 		vector<string>* netlistLines;
 		vector<Net>  netListVector;
@@ -59,6 +58,8 @@ class Datapath {
 		bool findRootNodes();
 		//Determine critical path of circuit by perform BFS on node graph
 		float determineCriticalPath();
+		//creates critical path list given the final node
+		void createCriticalPathList(Node* finalNode);
 		//Perform BFS given source node and return maximum path delay
 		void breadthFirstSearch(Node* source);
 		//Expand current node by updating path delay and setting it's children
