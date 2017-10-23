@@ -14,6 +14,7 @@
 #include <iomanip>
 #include "input.h"
 #include "datapath.h"
+#include "output.h"
 /**************************************************************************************************/
 
 //To recompile on cloud9 with dependencies:  
@@ -46,6 +47,8 @@ int main(int argc, char *argv[]) {
 			datapath.printNodeListVector();
 			datapath.printRootNodes();
 			datapath.printCriticalPathInfo();
+
+            Output
 		}
 		else {
 			return -1;
