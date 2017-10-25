@@ -31,6 +31,7 @@ class Node {
 		// Variables
 		int id;
 		string op;
+		string moduleName;
 		bool visited;
 		bool marked;
 		//Delay to reach node

@@ -151,6 +151,7 @@ int Datapath::parseNetlistLines() {
 			// do component
 			// search output
 			string op;
+			string moduleName;
 			Net* output;
 			vector<Net*> inputNets;
 			bool found = false;
@@ -162,58 +163,74 @@ int Datapath::parseNetlistLines() {
 					found = true;
 					output = &netListVector.at(i);
 					nowParsingText.erase(0, keyWord.length() + found_t.length());
-					if (output->type == "register")
+					if (output->type == "register"){
 						op = "REG";
+						moduleName = "register";
+                    }
 				}
 			}
 			if (found == false) {
 				return -1; // found no output
 			}         // search operator
-			if ((pos = nowParsingText.find(keyWord = "+ ")) != std::string::npos) {
+			if ((pos = nowParsingText.find(keyWord = " + 1")) != std::string::npos) {
+				op = "INC";
+				moduleName = "inc";
+			}
+			else if ((pos = nowParsingText.find(keyWord = " - 1")) != std::string::npos) {
+				op = "DEC";
+				moduleName = "dec";
+			}
+            else if ((pos = nowParsingText.find(keyWord = "+ ")) != std::string::npos) {
 				op = "ADD";
+				moduleName = "add";
 			}
 			else if ((pos = nowParsingText.find(keyWord = "- ")) != std::string::npos) {
 				op = "SUB";
+				moduleName = "sub";
 			}
 			else if ((pos = nowParsingText.find(keyWord = "* ")) != std::string::npos) {
 				op = "MUL";
+				moduleName = "mul";
 			}
             else if ((pos = nowParsingText.find(keyWord = ">> ")) != std::string::npos) {
 				op = "SHR";
+				moduleName = "shr";
 			}
 			else if ((pos = nowParsingText.find(keyWord = "<< ")) != std::string::npos) {
 				op = "SHL";
+				moduleName = "shl";
 			}
 
 			else if ((pos = nowParsingText.find(keyWord = "== ")) != std::string::npos) {
 				op = "COMP_EQ";
+				moduleName = "comp";
 			}
 			else if ((pos = nowParsingText.find(keyWord = "< ")) != std::string::npos) {
 				op = "COMP_LT";
+				moduleName = "comp";
 			}
 			else if ((pos = nowParsingText.find(keyWord = "> ")) != std::string::npos) {
 				op = "COMP_GT";
+				moduleName = "comp";
 			}
 			else if ((pos = nowParsingText.find(keyWord = "? ")) != std::string::npos) {
 				nowParsingText.erase(pos, keyWord.length());
 				pos = nowParsingText.find(keyWord = ": ");
 				op = "MUX2x1";
+				moduleName = "mux2x1";
 			}
 			else if ((pos = nowParsingText.find(keyWord = "/ ")) != std::string::npos) {
 				op = "DIV";
+				moduleName = "div";
 			}
 			else if ((pos = nowParsingText.find(keyWord = "% ")) != std::string::npos) {
 				op = "MOD";
-			}
-			else if ((pos = nowParsingText.find(keyWord = " + 1")) != std::string::npos) {
-				op = "INC";
-			}
-			else if ((pos = nowParsingText.find(keyWord = " - 1")) != std::string::npos) {
-				op = "DEC";
+				moduleName = "mod";
 			}
 			else if (op==""){
 				keyWord = "";
 				op = "WIRE";
+				moduleName = "";
 			}
 			//Only need to perform this once
 			createNodeInputs(&nowParsingText, &inputNets);
@@ -221,6 +238,7 @@ int Datapath::parseNetlistLines() {
 			Node  newNode;
 			newNode.output = output;
 			newNode.op = op;
+			newNode.moduleName = moduleName;
 			for (unsigned i = 0; i < inputNets.size(); i++) {
 				newNode.inputs.push_back(inputNets.at(i));
 			}
@@ -242,7 +260,7 @@ void Datapath::printNodeListVector() {
 }
 /**************************************************************************************************/
 void Datapath::updateAllNodeBitwidth() {
-	for (int i = 0; i < this->nodeListVector.size(); i++) {
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		//Check if node is not a comparator, bitwidth based of output net width
 		if (this->nodeListVector.at(i).op.find("COMP") == std::string::npos) {
 			this->nodeListVector.at(i).width = nodeListVector.at(i).output->width;
@@ -297,7 +315,7 @@ float Datapath::determineCriticalPath(){
 	
 	Node* finalNode;
 	float pathDelay = 0.0;
-	for (int i = 0; i < this->nodeListVector.size(); i++) {
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		//Check if current node is not a Register
 		if (nodeListVector.at(i).op.compare("REG") != 0) 
 			pathDelay = nodeListVector.at(i).pathDelay + nodeListVector.at(i).delay;
@@ -361,7 +379,7 @@ bool Datapath::expandNode(Node* currentNode) {
 	if (currentNode != NULL) {
 		Node* listNode;
 		bool root = (std::find(rootNodes.begin(), rootNodes.end(), currentNode) != rootNodes.end());
-		for (int i = 0; i < this->nodeListVector.size(); i++) {
+		for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 			//pointer for current list node being checked
 			listNode = &this->nodeListVector.at(i);
 			//check that current node and list node are not the same
@@ -385,7 +403,7 @@ bool Datapath::expandNode(Node* currentNode) {
 				}
 				//set childs
 				//check if current node's output matchs another node's inputs
-				for (int k = 0; k < listNode->inputs.size(); k++) {
+				for (unsigned int k = 0; k < listNode->inputs.size(); k++) {
 					//compare input net name with output net name
 					if (!listNode->inputs.at(k)->name.compare(currentNode->output->name)) {
 						//if child hasn't been added yet, add child node
@@ -404,7 +422,7 @@ bool Datapath::expandNode(Node* currentNode) {
 		float max = 0.0;
 		float pathDelay = 0.0;
 
-		for (int i = 0; i < currentNode->parentNodes.size(); i++) {
+		for (unsigned int i = 0; i < currentNode->parentNodes.size(); i++) {
 			//If parent node is not a Register then include node delay as part of path delay
 			if (currentNode->parentNodes.at(i)->op.compare("REG") != 0)
 				pathDelay = currentNode->parentNodes.at(i)->pathDelay + currentNode->parentNodes.at(i)->delay;

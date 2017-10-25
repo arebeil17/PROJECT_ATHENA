@@ -27,7 +27,7 @@ Node::Node(){
 string Node::toString() {
 	string result = "Inputs: ";
 
-	for (int i = 0; i < inputs.size(); i++) {
+	for (unsigned int i = 0; i < inputs.size(); i++) {
 		result += " " + inputs.at(i)->name;
 	}
 	result += " Output: " + output->name;
