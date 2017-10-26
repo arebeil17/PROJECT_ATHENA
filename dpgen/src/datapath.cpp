@@ -313,7 +313,7 @@ float Datapath::determineCriticalPath(){
 		breadthFirstSearch(this->rootNodes.at(i));
 	}
 	
-	Node* finalNode;
+	Node* finalNode = NULL;
 	float pathDelay = 0.0;
 	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		//Check if current node is not a Register
@@ -328,7 +328,7 @@ float Datapath::determineCriticalPath(){
 		}
 	}
 
-	createCriticalPathList(finalNode);
+	if(finalNode != NULL) createCriticalPathList(finalNode);
 
 	return criticalDelay;
 }
