@@ -35,17 +35,10 @@ bool Input::readInputFile(char *inputFile){
 		while (inputFS.good())
 		{	
 		    getline(inputFS, currentLine);
-			//inputFS >> currentLine; //read current line from input file 
-			
-			if (inputFS.good())
-			{
-			    if(currentLine != ""){
-			    	
-			    	if(errorCheck(currentLine))
-			    		this->netlistLines.push_back(currentLine);
-			    } 
-			}; 
-			
+	
+			if(currentLine != "") 
+				this->netlistLines.push_back(currentLine);
+
 		};
 		inputFS.close();
 		return true;
