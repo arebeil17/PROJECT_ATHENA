@@ -239,7 +239,11 @@ int Datapath::parseNetlistLines() {
 			newNode.output = output;
 			newNode.op = op;
 			newNode.moduleName = moduleName;
+			if (newNode.output->signedBit == true)
+				newNode.signedBit = true;
 			for (unsigned i = 0; i < inputNets.size(); i++) {
+				if (inputNets.at(i)->signedBit == true && newNode.signedBit == false)
+					newNode.signedBit = true;
 				newNode.inputs.push_back(inputNets.at(i));
 			}
 			newNode.id = nodeListVector.size() + 1;
@@ -313,7 +317,7 @@ float Datapath::determineCriticalPath(){
 		breadthFirstSearch(this->rootNodes.at(i));
 	}
 	
-	Node* finalNode = NULL;
+	Node* finalNode;
 	float pathDelay = 0.0;
 	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		//Check if current node is not a Register
@@ -328,7 +332,7 @@ float Datapath::determineCriticalPath(){
 		}
 	}
 
-	if(finalNode != NULL) createCriticalPathList(finalNode);
+	createCriticalPathList(finalNode);
 
 	return criticalDelay;
 }
@@ -365,8 +369,11 @@ void Datapath::breadthFirstSearch(Node* source) {
 			expandNode(currentNode);
 
 			for (unsigned int i = 0; i < currentNode->childNodes.size(); i++) {
-				if (currentNode->childNodes.at(i)->visited == false)
+				if (currentNode->childNodes.at(i)->visited == false 
+					&& currentNode->childNodes.at(i)->marked != true) {
+					currentNode->childNodes.at(i)->marked = true;
 					nodeQueue.push(currentNode->childNodes.at(i));
+				}
 			}
 			currentNode->visited = true;
 		}

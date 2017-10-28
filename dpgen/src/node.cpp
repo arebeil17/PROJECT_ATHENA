@@ -19,6 +19,7 @@ Node::Node(){
 
 	visited = false;
 	marked = false;
+	signedBit = false;
 	criticalNode = NULL;
 	depth = 0;
 }

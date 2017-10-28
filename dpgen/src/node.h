@@ -34,6 +34,7 @@ class Node {
 		string moduleName;
 		bool visited;
 		bool marked;
+		bool signedBit;
 		//Delay to reach node
 		float pathDelay;
 		float delay;
