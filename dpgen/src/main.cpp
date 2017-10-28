@@ -37,17 +37,20 @@ int main(int argc, char *argv[]) {
 
 				datapath.determineCriticalPath();
 
-				datapath.printAll(true);
+				datapath.printAll(false);
 
 				Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
 				output.makeVerilog();
 			}
 			else {
-				cout << "\nError found in netlist file at line " << to_string(datapath.currentLine)<<". Aborted netlist conversion." << endl;
+				cout << "\nError found in netlist file at line " << to_string(datapath.currentLine + 1)<<". Aborted netlist conversion." << endl;
 				return -1;
 			}
+		} //Empty input file provided
+		else {
+			return -1;
 		}
-	}
+	}//Invalid number of input arguments entered
 	else {
 		cout << "\nUsage: " << argv[0] << " netlistFile verilogFile" << endl;
 		return -1;

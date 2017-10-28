@@ -41,23 +41,14 @@ bool Input::readInputFile(char *inputFile){
 
 		};
 		inputFS.close();
-		return true;
+		
+		//Check for empty input file
+		if (netlistLines.size() == 0) {
+			cout << "\nEmpty netlistFile provided. Aborted netlist conversion." << endl;
+			return false;  
+		} else
+			return true;
 	}
 	return false;
-}
-/**************************************************************************************************/
-//Verify line for errors
-bool Input::errorCheck(string line){
-	
-	//TODO: check for errors in current line
-	// ...
-	// ...
-	//Case 1: x = a + b nswfgjwbnfk
-	
-	//Case 2: x = a $ b
-	
-	//Case 3: etc ...
-	
-	return true;
 }
 /**************************************************************************************************/

@@ -69,7 +69,7 @@ class Datapath {
 		void printRootNodes();
 		//Print critical path info
 		void printCriticalPathInfo(bool full);
-		//Print all information
+		//Print all information by setting all to true else just critical path
 		void printAll(bool all);
 		
 };

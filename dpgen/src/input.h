@@ -30,10 +30,7 @@ class Input {
 		
 		//Reads specified netlist input file
 		bool readInputFile(char *inputFile);
-		
-		//Verify line for errors
-		bool errorCheck(string line);
-		
+	
 };
  
 #endif //INPUT_H

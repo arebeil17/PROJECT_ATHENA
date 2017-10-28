@@ -67,12 +67,15 @@ bool Datapath::createNodeInputs(string* nowParsingText, vector<Net*>* inputNets)
 		}
 		nowParsingText->erase(0, keyWord.length() + found_t.length());
 	}
-	found = false; //last trial
-	found_t = *nowParsingText;
-	for (unsigned i = 0; i<netListVector.size(); i++) {
-		if (netListVector.at(i).name.compare(found_t) == 0) {
-			inputNets->push_back(&netListVector.at(i));
-			found = true;  // Found one.
+	//If remaining string is not empty continue checking for additional nets
+	if (nowParsingText->compare("") != 0) {
+		found = false; //last trial
+		found_t = *nowParsingText;
+		for (unsigned i = 0; i < netListVector.size(); i++) {
+			if (netListVector.at(i).name.compare(found_t) == 0) {
+				inputNets->push_back(&netListVector.at(i));
+				found = true;  // Found one.
+			}
 		}
 	}
 	return found;
