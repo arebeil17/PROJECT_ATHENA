@@ -15,6 +15,7 @@ Datapath::Datapath()
 {
 	maxBitwidth = 0;
 	criticalDelay = 0.0;
+	currentLine = 0;
 }
 /**************************************************************************************************/
 //Customer constructor
@@ -38,10 +39,11 @@ int Datapath::createNetList(string* nowParsingText, string type, int width, bool
 	newNet.type = type;
 	newNet.width = width;
 	newNet.signedBit = signedBit;
-	if ((pos = nowParsingText->find(" ")) != std::string::npos) //special case, ending has " " padding.
+	
+	if ((pos = nowParsingText->find("\t")) != std::string::npos)//special case, ending has "\t"
 		newNet.name = nowParsingText->substr(0, pos);
-	else if ((pos = nowParsingText->find("\t")) != std::string::npos)//special case, ending has "\t"
-		newNet.name = nowParsingText->substr(0, pos);
+	else if ((pos = nowParsingText->find(" ")) != std::string::npos) //special case, ending has " " padding.
+			newNet.name = nowParsingText->substr(0, pos);
 	else
 		newNet.name = *nowParsingText;
 	netListVector.push_back(newNet);
@@ -58,7 +60,7 @@ bool Datapath::createNodeInputs(string* nowParsingText, vector<Net*>* inputNets)
 	while ((pos = nowParsingText->find(keyWord)) != std::string::npos) {
 		found_t = nowParsingText->substr(0, pos);
 		for (unsigned i = 0; i<netListVector.size(); i++) {
-			if (netListVector.at(i).name == found_t) {
+			if (netListVector.at(i).name.compare(found_t) == 0) {
 				inputNets->push_back(&netListVector.at(i));
 				found = true;  // Found one.
 			}
@@ -68,7 +70,7 @@ bool Datapath::createNodeInputs(string* nowParsingText, vector<Net*>* inputNets)
 	found = false; //last trial
 	found_t = *nowParsingText;
 	for (unsigned i = 0; i<netListVector.size(); i++) {
-		if (netListVector.at(i).name == found_t) {
+		if (netListVector.at(i).name.compare(found_t) == 0) {
 			inputNets->push_back(&netListVector.at(i));
 			found = true;  // Found one.
 		}
@@ -78,7 +80,7 @@ bool Datapath::createNodeInputs(string* nowParsingText, vector<Net*>* inputNets)
 
 
 /**************************************************************************************************/
-int Datapath::parseNetlistLines() {
+bool Datapath::parseNetlistLines() {
 	string  nowParsingText;
 	string  keyWord;
 	string  found_t;
@@ -86,6 +88,7 @@ int Datapath::parseNetlistLines() {
 	int bitWidth;
 	size_t  pos;
 	for (unsigned int i = 0; i < netlistLines->size(); i++) {
+		currentLine = i; //for error checking
 		nowParsingText = netlistLines->at(i);
 		signedBit = true;
 		//Check if Input
@@ -159,7 +162,7 @@ int Datapath::parseNetlistLines() {
 				found_t = nowParsingText.substr(0, pos);
 			}
 			for (unsigned i = 0; i < netListVector.size(); i++) {
-				if (netListVector.at(i).name == found_t) {
+				if (netListVector.at(i).name.compare(found_t) == 0) {
 					found = true;
 					output = &netListVector.at(i);
 					nowParsingText.erase(0, keyWord.length() + found_t.length());
@@ -170,7 +173,7 @@ int Datapath::parseNetlistLines() {
 				}
 			}
 			if (found == false) {
-				return -1; // found no output
+				return false; // found no output
 			}         // search operator
 			if ((pos = nowParsingText.find(keyWord = " + 1")) != std::string::npos) {
 				op = "INC";
@@ -233,7 +236,7 @@ int Datapath::parseNetlistLines() {
 				moduleName = "";
 			}
 			//Only need to perform this once
-			createNodeInputs(&nowParsingText, &inputNets);
+			if (!createNodeInputs(&nowParsingText, &inputNets)) return false;
 
 			Node  newNode;
 			newNode.output = output;
@@ -249,8 +252,10 @@ int Datapath::parseNetlistLines() {
 			newNode.id = nodeListVector.size() + 1;
 			nodeListVector.push_back(newNode);
 		}
-	}
-	return 1;
+
+	}//End of main for loop
+
+	return true;
 }
 /**************************************************************************************************/
 void Datapath::printNodeListVector() {
@@ -460,14 +465,28 @@ void Datapath::printRootNodes() {
 }
 /**************************************************************************************************/
 //Print critical path info
-void Datapath::printCriticalPathInfo() {
-	cout << endl << "Critical Path Nodes: \n";
-	cout << "--------------------------------------------------------------------------" << endl;
-	cout << "Critical Path Delay: " + to_string(this->criticalDelay) << " Nodes: " + to_string(criticalPath.size()) <<endl;
-	cout << "--------------------------------------------------------------------------" << endl;
-	for (std::list<Node*>::iterator it = criticalPath.begin(); it != criticalPath.end(); ++it) {
-		cout << "Node id: " + to_string((*it)->id) + " Depth: "+ to_string((*it)->depth) +" Type: " + (*it)->op << endl;
-		cout << "	" << (*it)->toString() << endl;
+void Datapath::printCriticalPathInfo(bool full) {
+	if (full) {
+		cout << endl << "Critical Path Nodes: \n";
 		cout << "--------------------------------------------------------------------------" << endl;
+		cout << "Critical Path Delay: " + to_string(this->criticalDelay) << " Nodes: " + to_string(criticalPath.size()) << endl;
+		cout << "--------------------------------------------------------------------------" << endl;
+		for (std::list<Node*>::iterator it = criticalPath.begin(); it != criticalPath.end(); ++it) {
+			cout << "Node id: " + to_string((*it)->id) + " Depth: " + to_string((*it)->depth) + " Type: " + (*it)->op << endl;
+			cout << "	" << (*it)->toString() << endl;
+			cout << "--------------------------------------------------------------------------" << endl;
+		}
 	}
+	else {
+		cout << "Critical Path Delay: " + to_string(this->criticalDelay) << " ns" << endl;
+	}
+}
+/**************************************************************************************************/
+//Print all information
+void Datapath::printAll(bool all) {
+	if (all) {
+		printNodeListVector();
+		printRootNodes();
+	}
+	printCriticalPathInfo(all);
 }

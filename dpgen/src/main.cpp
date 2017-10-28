@@ -33,16 +33,19 @@ int main(int argc, char *argv[]) {
 			}
 			Datapath datapath = Datapath(&(input.netlistLines));
 
-			datapath.parseNetlistLines();
+			if (datapath.parseNetlistLines()) {
 
-			datapath.determineCriticalPath();
+				datapath.determineCriticalPath();
 
-			datapath.printNodeListVector();
-			datapath.printRootNodes();
-			datapath.printCriticalPathInfo();
+				datapath.printAll(true);
 
-			Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
-			output.makeVerilog();
+				Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
+				output.makeVerilog();
+			}
+			else {
+				cout << "\nError found in netlist file at line " << to_string(datapath.currentLine)<<". Aborted netlist conversion." << endl;
+				return -1;
+			}
 		}
 	}
 	else {

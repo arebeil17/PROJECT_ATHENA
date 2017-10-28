@@ -30,6 +30,7 @@ class Datapath {
 	
 	public:
 		float criticalDelay;
+		int currentLine;
 		vector<string>* netlistLines;
 		vector<Net>  netListVector;
 		vector<Node> nodeListVector;
@@ -47,7 +48,7 @@ class Datapath {
 		//Create node inputs from parsed string and input net vector
 		bool createNodeInputs(string* nowParsingText, vector<Net*>* inputNets);
 		//Parse all netlist lines read from netlist file
-		int parseNetlistLines();
+		bool parseNetlistLines();
 		//Print information of all nodes created from netlist file
 		void printNodeListVector();
 		//Update each nodes bitwidth based off output
@@ -67,7 +68,9 @@ class Datapath {
 		//Print Root Nodes
 		void printRootNodes();
 		//Print critical path info
-		void printCriticalPathInfo();
+		void printCriticalPathInfo(bool full);
+		//Print all information
+		void printAll(bool all);
 		
 };
  
