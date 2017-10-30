@@ -35,8 +35,11 @@ bool Input::readInputFile(char *inputFile){
 		while (inputFS.good())
 		{	
 		    getline(inputFS, currentLine);
-	
-			if(currentLine != "") 
+			
+			//Trim string by removing \r\n or other hidden characters
+			currentLine = trim_right(currentLine);
+
+			if(currentLine.compare("") != 0) 
 				this->netlistLines.push_back(currentLine);
 
 		};
@@ -52,3 +55,10 @@ bool Input::readInputFile(char *inputFile){
 	return false;
 }
 /**************************************************************************************************/
+//Right trim
+//
+string Input::trim_right(const std::string& str)
+{
+	const std::string pattern = " \f\n\r\t\v";
+	return str.substr(0, str.find_last_not_of(pattern) + 1);
+}

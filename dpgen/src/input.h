@@ -30,7 +30,9 @@ class Input {
 		
 		//Reads specified netlist input file
 		bool readInputFile(char *inputFile);
-	
+		
+		//Trim string to remove hidden carriage return characters
+		string trim_right(const std::string& str);
 };
  
 #endif //INPUT_H
