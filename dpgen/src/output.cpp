@@ -80,17 +80,16 @@ string Output::getNetMatched(unsigned int i, string io, int numOfNets){
    int netWidth;
    int nodeWidth = nodeListVector->at(i).width;
    bool netIsSigned;
-   bool nodeIsSigned;
+   bool nodeIsSigned = nodeListVector->at(i).signedBit;
     if(io=="inputs"){
         result      = nodeListVector->at(i).inputs.at(numOfNets)->name;
         netWidth    = nodeListVector->at(i).inputs.at(numOfNets)->width;
         netIsSigned   = nodeListVector->at(i).inputs.at(numOfNets)->signedBit;
-        nodeIsSigned   = nodeListVector->at(i).signedBit;
-        nodeWidth    = nodeListVector->at(i).width;
     }
     else {
         result = nodeListVector->at(i).output->name;
         netWidth    = nodeListVector->at(i).output->width;
+        netIsSigned   = nodeListVector->at(i).output->signedBit;
     }
     if(nodeWidth>netWidth){
         if(netIsSigned&&nodeIsSigned&&(netWidth>1)) //net signed, node signed
