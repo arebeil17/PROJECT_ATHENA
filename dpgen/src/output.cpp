@@ -79,28 +79,39 @@ string Output::getNetMatched(unsigned int i, string io, int numOfNets){
    string result;
    int netWidth;
    int nodeWidth = nodeListVector->at(i).width;
-   bool signedBit;
+   bool netIsSigned;
+   bool nodeIsSigned;
     if(io=="inputs"){
         result      = nodeListVector->at(i).inputs.at(numOfNets)->name;
         netWidth    = nodeListVector->at(i).inputs.at(numOfNets)->width;
-        signedBit   = nodeListVector->at(i).inputs.at(numOfNets)->signedBit;
+        netIsSigned   = nodeListVector->at(i).inputs.at(numOfNets)->signedBit;
+        nodeIsSigned   = nodeListVector->at(i).signedBit;
+        nodeWidth    = nodeListVector->at(i).width;
     }
     else {
         result = nodeListVector->at(i).output->name;
         netWidth    = nodeListVector->at(i).output->width;
     }
     if(nodeWidth>netWidth){
-        if(signedBit&&(netWidth>1))
+        if(netIsSigned&&nodeIsSigned&&(netWidth>1)) //net signed, node signed
             result = result+"["+to_string(netWidth-1)+"]?{{"+to_string(nodeWidth-netWidth)+"{1'd1}},"+result+"}:{{"+to_string(nodeWidth-netWidth)+"{1'd0}},"+result+"}";
-        else
+        else    // Include three cases:
+                //  1. net unsigned, node signed --> postive number so add zero on MSB
+                //  2. net signed, node unsigned (not gonna happen, node was only assigned to unsigned if all IOs are unsigned.) 
+                //  3. net unsigned, node unsigned (possible), unsgined expanding so pad 0 on MSB 
             result = "{"+to_string(nodeWidth-netWidth)+"'d0,"+result+"}";
-            
     }
     else if(netWidth>nodeWidth){
-        result = result+"["+to_string(nodeWidth-1)+":0]";
+        if(!netIsSigned&&nodeIsSigned&&(nodeWidth>1))  //net unsigned, node signed
+            result = "{1'd0,"+result+"["+to_string(nodeWidth-2)+":0]}";
+        else    
+            result = result+"["+to_string(nodeWidth-1)+":0]";
     }
     else {// width is match
-       // do nothing
+         if(!netIsSigned&&nodeIsSigned&&(nodeWidth>1))  //net unsigned, node signed
+            result = "{1'd0,"+result+"["+to_string(nodeWidth-2)+":0]}";
+         else
+            {} // do nothing
     }
 return result;
 }
