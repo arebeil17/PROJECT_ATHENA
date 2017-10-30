@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 
 				datapath.determineCriticalPath();
 
-				datapath.printAll(false);
+				datapath.printAll(true);
 
 				Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
 				output.makeVerilog();

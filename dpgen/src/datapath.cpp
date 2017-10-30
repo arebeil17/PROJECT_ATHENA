@@ -378,7 +378,7 @@ void Datapath::breadthFirstSearch(Node* source) {
 
 			for (unsigned int i = 0; i < currentNode->childNodes.size(); i++) {
 				if (currentNode->childNodes.at(i)->visited == false 
-					&& currentNode->childNodes.at(i)->marked != true) {
+					/*&& currentNode->childNodes.at(i)->marked != true*/) {
 					currentNode->childNodes.at(i)->marked = true;
 					nodeQueue.push(currentNode->childNodes.at(i));
 				}
