@@ -334,13 +334,16 @@ float Datapath::determineCriticalPath(){
 		else 
 			pathDelay = nodeListVector.at(i).pathDelay;
 
-		if (criticalDelay < pathDelay) {
+		if ((criticalDelay < pathDelay) && (&nodeListVector.at(i) != NULL)) {
 			criticalDelay = pathDelay;
 			finalNode = &nodeListVector.at(i);
 		}
 	}
 
-	if(finalNode != NULL) createCriticalPathList(finalNode);
+	if (finalNode != NULL)
+		createCriticalPathList(finalNode);
+	else
+		criticalDelay = 0.0;
 
 	return criticalDelay;
 }
