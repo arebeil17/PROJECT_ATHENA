@@ -66,9 +66,12 @@ bool Datapath::createNodeInputs(string* nowParsingText, vector<Net*>* inputNets)
 			if (netListVector.at(i).name.compare(found_t) == 0) {
 				inputNets->push_back(&netListVector.at(i));
 				found = true;  // Found one.
-			}
-		}
-		nowParsingText->erase(0, keyWord.length() + found_t.length());
+		        nowParsingText->erase(0, keyWord.length() + found_t.length()); //only delete inputs when found
+		    }
+        }
+	    if(*nowParsingText==" "){
+            *nowParsingText="";
+        }; // remove tailing space 
 	}
 	//If remaining string is not empty continue checking for additional nets
 	if (nowParsingText->compare("") != 0) {
@@ -78,9 +81,13 @@ bool Datapath::createNodeInputs(string* nowParsingText, vector<Net*>* inputNets)
 			if (netListVector.at(i).name.compare(found_t) == 0) {
 				inputNets->push_back(&netListVector.at(i));
 				found = true;  // Found one.
+		        nowParsingText->erase(0, found_t.length()); //only delete inputs when found
 			}
+            else{
+                *nowParsingText=""; // no match inputs closing all ending parts
+            }
 		}
-	}
+	} 
 	return found;
 }
 
@@ -181,67 +188,97 @@ bool Datapath::parseNetlistLines() {
 			if (found == false) {
 				return false; // found no output
 			}         // search operator
-			if ((pos = nowParsingText.find(keyWord = " + 1")) != std::string::npos) {
+			if ((pos = nowParsingText.find(keyWord = "+ 1")) != std::string::npos) {
 				op = "INC";
 				moduleName = "inc";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = " - 1")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "- 1")) != std::string::npos) {
 				op = "DEC";
 				moduleName = "dec";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
             else if ((pos = nowParsingText.find(keyWord = "+ ")) != std::string::npos) {
 				op = "ADD";
 				moduleName = "add";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "- ")) != std::string::npos) {
 				op = "SUB";
 				moduleName = "sub";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "* ")) != std::string::npos) {
 				op = "MUL";
 				moduleName = "mul";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
             else if ((pos = nowParsingText.find(keyWord = ">> ")) != std::string::npos) {
 				op = "SHR";
 				moduleName = "shr";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "<< ")) != std::string::npos) {
 				op = "SHL";
 				moduleName = "shl";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 
 			else if ((pos = nowParsingText.find(keyWord = "== ")) != std::string::npos) {
 				op = "COMP_EQ";
 				moduleName = "comp";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "< ")) != std::string::npos) {
 				op = "COMP_LT";
 				moduleName = "comp";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "> ")) != std::string::npos) {
 				op = "COMP_GT";
 				moduleName = "comp";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "? ")) != std::string::npos) {
 				nowParsingText.erase(pos, keyWord.length());
 				pos = nowParsingText.find(keyWord = ": ");
 				op = "MUX2x1";
 				moduleName = "mux2x1";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "/ ")) != std::string::npos) {
 				op = "DIV";
 				moduleName = "div";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "% ")) != std::string::npos) {
 				op = "MOD";
 				moduleName = "mod";
+			    // Remove operator 
+                nowParsingText.erase(pos, keyWord.length());
 			}
-			else if (op==""){
+			else if ((pos = nowParsingText.find(keyWord = " ")) != std::string::npos&&
+                      pos!=(nowParsingText.length()-1)){
+             return false; // no matching operator
+			}
+            else if (op==""){
 				keyWord = "";
 				op = "WIRE";
 				moduleName = "";
-			}
-			//Only need to perform this once
+            }
+            //Only need to perform this once
 			if (!createNodeInputs(&nowParsingText, &inputNets)) return false;
 
 			Node  newNode;
