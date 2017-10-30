@@ -21,6 +21,9 @@ Datapath::Datapath()
 //Customer constructor
 Datapath::Datapath(vector<string>* netlistLines) {
 	this->netlistLines = netlistLines;
+	maxBitwidth = 0;
+	criticalDelay = 0.0;
+	currentLine = 0;
 }
 /**************************************************************************************************/
 int Datapath::createNetList(string* nowParsingText, string type, int width, bool signedBit) {
