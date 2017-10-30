@@ -325,7 +325,7 @@ float Datapath::determineCriticalPath(){
 		breadthFirstSearch(this->rootNodes.at(i));
 	}
 	
-	Node* finalNode;
+	Node* finalNode = NULL;
 	float pathDelay = 0.0;
 	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		//Check if current node is not a Register
@@ -340,7 +340,7 @@ float Datapath::determineCriticalPath(){
 		}
 	}
 
-	createCriticalPathList(finalNode);
+	if(finalNode != NULL) createCriticalPathList(finalNode);
 
 	return criticalDelay;
 }
@@ -349,7 +349,7 @@ float Datapath::determineCriticalPath(){
 void Datapath::createCriticalPathList(Node* finalNode) {
 	Node* currentNode = finalNode;
 	this->criticalPath.push_front(currentNode);
-	while (currentNode->criticalNode != NULL) {
+	while (currentNode->criticalNode != NULL && currentNode != NULL) {
 		//Set current node to critical/next node
 		currentNode = currentNode->criticalNode;
 		this->criticalPath.push_front(currentNode);
@@ -474,10 +474,12 @@ void Datapath::printCriticalPathInfo(bool full) {
 		cout << "--------------------------------------------------------------------------" << endl;
 		cout << "Critical Path Delay: " + to_string(this->criticalDelay) << " Nodes: " + to_string(criticalPath.size()) << endl;
 		cout << "--------------------------------------------------------------------------" << endl;
-		for (std::list<Node*>::iterator it = criticalPath.begin(); it != criticalPath.end(); ++it) {
-			cout << "Node id: " + to_string((*it)->id) + " Depth: " + to_string((*it)->depth) + " Type: " + (*it)->op << endl;
-			cout << "	" << (*it)->toString() << endl;
-			cout << "--------------------------------------------------------------------------" << endl;
+		if (criticalPath.size() > 0) {
+			for (std::list<Node*>::iterator it = criticalPath.begin(); it != criticalPath.end(); ++it) {
+				cout << "Node id: " + to_string((*it)->id) + " Depth: " + to_string((*it)->depth) + " Type: " + (*it)->op << endl;
+				cout << "	" << (*it)->toString() << endl;
+				cout << "--------------------------------------------------------------------------" << endl;
+			}
 		}
 	}
 	else {
