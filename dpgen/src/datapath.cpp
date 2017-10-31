@@ -181,7 +181,7 @@ bool Datapath::parseNetlistLines() {
 					nowParsingText.erase(0, keyWord.length() + found_t.length());
 					if (output->type == "register"){
 						op = "REG";
-						moduleName = "register";
+						moduleName = "REG";
                     }
 				}
 			}
@@ -190,62 +190,62 @@ bool Datapath::parseNetlistLines() {
 			}         // search operator
 			if ((pos = nowParsingText.find(keyWord = "+ 1")) != std::string::npos) {
 				op = "INC";
-				moduleName = "inc";
+				moduleName = "INC";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "- 1")) != std::string::npos) {
 				op = "DEC";
-				moduleName = "dec";
+				moduleName = "DEC";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
             else if ((pos = nowParsingText.find(keyWord = "+ ")) != std::string::npos) {
 				op = "ADD";
-				moduleName = "add";
+				moduleName = "ADD";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "- ")) != std::string::npos) {
 				op = "SUB";
-				moduleName = "sub";
+				moduleName = "SUB";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "* ")) != std::string::npos) {
 				op = "MUL";
-				moduleName = "mul";
+				moduleName = "MUL";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
             else if ((pos = nowParsingText.find(keyWord = ">> ")) != std::string::npos) {
 				op = "SHR";
-				moduleName = "shr";
+				moduleName = "SHR";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "<< ")) != std::string::npos) {
 				op = "SHL";
-				moduleName = "shl";
+				moduleName = "SHL";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 
 			else if ((pos = nowParsingText.find(keyWord = "== ")) != std::string::npos) {
 				op = "COMP_EQ";
-				moduleName = "comp";
+				moduleName = "COMP";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "< ")) != std::string::npos) {
 				op = "COMP_LT";
-				moduleName = "comp";
+				moduleName = "COMP";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "> ")) != std::string::npos) {
 				op = "COMP_GT";
-				moduleName = "comp";
+				moduleName = "COMP";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
@@ -253,19 +253,19 @@ bool Datapath::parseNetlistLines() {
 				nowParsingText.erase(pos, keyWord.length());
 				pos = nowParsingText.find(keyWord = ": ");
 				op = "MUX2x1";
-				moduleName = "mux2x1";
+				moduleName = "MUX2x1";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "/ ")) != std::string::npos) {
 				op = "DIV";
-				moduleName = "div";
+				moduleName = "DIV";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 			else if ((pos = nowParsingText.find(keyWord = "% ")) != std::string::npos) {
 				op = "MOD";
-				moduleName = "mod";
+				moduleName = "MOD";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
@@ -285,8 +285,13 @@ bool Datapath::parseNetlistLines() {
 			newNode.output = output;
 			newNode.op = op;
 			newNode.moduleName = moduleName;
-			if (newNode.output->signedBit == true)
+			if (newNode.output->signedBit == true){
 				newNode.signedBit = true;
+			    newNode.moduleName = "S"+moduleName;
+            }
+            else {
+			    newNode.moduleName = moduleName;
+            }
 			for (unsigned i = 0; i < inputNets.size(); i++) {
 				if (inputNets.at(i)->signedBit == true && newNode.signedBit == false)
 					newNode.signedBit = true;
