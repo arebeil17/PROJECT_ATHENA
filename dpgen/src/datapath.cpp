@@ -369,7 +369,11 @@ float Datapath::determineCriticalPath(){
 		//Perform BFS on source node
 		breadthFirstSearch(this->rootNodes.at(i));
 	}
-	
+	//Recompute delay after graph search complete
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
+		this->nodeListVector.at(i).computeDelay();
+	}
+
 	Node* finalNode = NULL;
 	float pathDelay = 0.0;
 	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
@@ -425,8 +429,7 @@ void Datapath::breadthFirstSearch(Node* source) {
 			expandNode(currentNode);
 
 			for (unsigned int i = 0; i < currentNode->childNodes.size(); i++) {
-				if (currentNode->childNodes.at(i)->visited == false 
-					/*&& currentNode->childNodes.at(i)->marked != true*/) {
+				if (currentNode->childNodes.at(i)->visited == false ) {
 					currentNode->childNodes.at(i)->marked = true;
 					nodeQueue.push(currentNode->childNodes.at(i));
 				}
@@ -481,24 +484,9 @@ bool Datapath::expandNode(Node* currentNode) {
 				}
 			}
 		}
-		//Update max path delay to node
-		float max = 0.0;
-		float pathDelay = 0.0;
-
-		for (unsigned int i = 0; i < currentNode->parentNodes.size(); i++) {
-			//If parent node is not a Register then include node delay as part of path delay
-			if (currentNode->parentNodes.at(i)->op.compare("REG") != 0)
-				pathDelay = currentNode->parentNodes.at(i)->pathDelay + currentNode->parentNodes.at(i)->delay;
-			else
-				pathDelay = 0.0;
-
-			if (max <= pathDelay) {
-				max = pathDelay;
-				currentNode->criticalNode = currentNode->parentNodes.at(i);
-				currentNode->depth = currentNode->parentNodes.at(i)->depth + 1;
-			}
-		}
-		currentNode->pathDelay = max;
+			
+		//Update max path delay to max parent node delay
+		currentNode->computeDelay();
 		return true;
 	}
 	return false;

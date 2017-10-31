@@ -53,6 +53,8 @@ class Node {
 		float getDelay();
 		//Get delay
 		float getDelay(string op, int bitwidth);
+		//compute node delay
+		void computeDelay();
 
 };
  

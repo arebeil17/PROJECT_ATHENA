@@ -185,3 +185,26 @@ float Node::getDelay(string op, int bitwidth)
 	}
 	return 0;
 }
+/**************************************************************************************************/
+//compute node delay
+void Node::computeDelay()
+{
+	//Update max path delay to node
+	float max = 0.0;
+	float pathDelay = 0.0;
+
+	for (unsigned int i = 0; i < this->parentNodes.size(); i++) {
+		//If parent node is not a Register then include node delay as part of path delay
+		if (this->parentNodes.at(i)->op.compare("REG") != 0)
+			pathDelay = this->parentNodes.at(i)->pathDelay + this->parentNodes.at(i)->delay;
+		else
+			pathDelay = 0.0;
+
+		if (max <= pathDelay) {
+			max = pathDelay;
+			this->criticalNode = this->parentNodes.at(i);
+			this->depth = this->parentNodes.at(i)->depth + 1;
+		}
+	}
+	this->pathDelay = max;
+}
