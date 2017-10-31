@@ -364,7 +364,11 @@ float Datapath::determineCriticalPath(){
 		//Perform BFS on source node
 		breadthFirstSearch(this->rootNodes.at(i));
 	}
-	
+	//Recompute delay after graph search complete
+	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
+		this->nodeListVector.at(i).computeDelay();
+	}
+
 	Node* finalNode = NULL;
 	float pathDelay = 0.0;
 	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
@@ -420,8 +424,7 @@ void Datapath::breadthFirstSearch(Node* source) {
 			expandNode(currentNode);
 
 			for (unsigned int i = 0; i < currentNode->childNodes.size(); i++) {
-				if (currentNode->childNodes.at(i)->visited == false 
-					/*&& currentNode->childNodes.at(i)->marked != true*/) {
+				if (currentNode->childNodes.at(i)->visited == false ) {
 					currentNode->childNodes.at(i)->marked = true;
 					nodeQueue.push(currentNode->childNodes.at(i));
 				}
