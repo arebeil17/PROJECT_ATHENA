@@ -1,0 +1,12 @@
+cp add.v                 sadd.v
+cp comp.v                scomp.v
+cp dec.v                 sdec.v
+cp div.v                 sdiv.v
+cp inc.v                 sinc.v
+cp mod.v                 smod.v
+cp mul.v                 smul.v
+cp mux2x1.v              smux2x1.v
+cp register.v            sregister.v
+cp shl.v                 sshl.v
+cp shr.v                 sshr.v
+cp sub.v                 ssub.v
