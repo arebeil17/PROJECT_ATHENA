@@ -27,10 +27,7 @@ int main(int argc, char *argv[]) {
 		Input input;
 
 		if (input.readInputFile(argv[1])) {
-			//for debugging prints out file read 
-			for (unsigned int i = 0; i < input.netlistLines.size(); i++) {
-				cout << input.netlistLines.at(i) << endl;
-			}
+			
 			Datapath datapath = Datapath(&(input.netlistLines));
 
 			if (datapath.parseNetlistLines()) {

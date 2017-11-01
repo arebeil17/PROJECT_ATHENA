@@ -524,10 +524,16 @@ void Datapath::printCriticalPathInfo(bool full) {
 }
 /**************************************************************************************************/
 //Print all information
-void Datapath::printAll(bool all) {
+bool Datapath::printAll(bool all) {
 	if (all) {
+		//for debugging prints out file read 
+		for (unsigned int i = 0; i < netlistLines->size(); i++) {
+			cout << netlistLines->at(i) << endl;
+		}
 		printNodeListVector();
 		printRootNodes();
 	}
 	printCriticalPathInfo(all);
+
+	return all;
 }

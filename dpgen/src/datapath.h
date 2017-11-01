@@ -70,7 +70,7 @@ class Datapath {
 		//Print critical path info
 		void printCriticalPathInfo(bool full);
 		//Print all information by setting all to true else just critical path
-		void printAll(bool all);
+		bool printAll(bool all);
 		
 };
  
