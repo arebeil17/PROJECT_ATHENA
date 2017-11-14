@@ -1,0 +1,21 @@
+input Int8 a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p
+
+output Int32 final
+
+wire Int32 t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14
+
+t1 = a + b
+t2 = t1 + c
+t3 = t2 + d
+t4 = t3 + e
+t5 = t4 + f
+t6 = t5 + g
+t7 = t6 + h
+t8 = t7 + i
+t9 = t8 + j
+t10 = t9 + l
+t11 = t10 + m
+t12 = t11 + n
+t13 = t12 + o
+t14 = t13 + p
+final = t14
