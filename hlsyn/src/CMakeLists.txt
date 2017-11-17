@@ -7,7 +7,7 @@
 # the need to request permission for future assignments **as long as all edits are made by
 # the submitting student**. Once a student modifies the file, they may not share it with
 # any other student; sharing it in any way is a violation of the Code of Academic Integrity.
-
+cmake_minimum_required(VERSION 3.2)
 # Windows does weird things sometimes. This helps control the madness.
 if(MSVC)
     # Sets the compilation flags to report warnings through Level 4. We used to use "-Wall" until
