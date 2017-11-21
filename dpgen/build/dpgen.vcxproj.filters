@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\datapath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\net.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\output.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\datapath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\delay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\net.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FEB6D7D0-87C8-3D6D-8757-97BB21C94CBD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{D1A902F3-7DDC-3936-9135-975492676121}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

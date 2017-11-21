@@ -1,0 +1,11 @@
+﻿  datapath.cpp
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xlocale(341): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\datapath.cpp(177): warning C4456: declaration of 'i' hides previous local declaration
+  C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\datapath.cpp(103): note: see declaration of 'i'
+C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\datapath.cpp(290): warning C4456: declaration of 'i' hides previous local declaration
+  C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\datapath.cpp(103): note: see declaration of 'i'
+C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\src\datapath.cpp(295): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\limits(210): warning C4577: 'noexcept' used with no exception handling mode specified; termination on exception is not guaranteed. Specify /EHsc
+c:\users\andres\documents\github\project_athena\dpgen\src\datapath.cpp(285): warning C4701: potentially uninitialized local variable 'output' used
+c:\users\andres\documents\github\project_athena\dpgen\src\datapath.cpp(285): warning C4703: potentially uninitialized local pointer variable 'output' used
+  dpgen.vcxproj -> C:\Users\Andres\Documents\GitHub\PROJECT_ATHENA\dpgen\build\Debug\dpgen.exe
