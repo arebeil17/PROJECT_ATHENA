@@ -31,14 +31,14 @@ class Datapath {
 	public:
 		float criticalDelay;
 		int currentLine;
-		vector<string>* netlistLines;
+		vector<string> netlistLines;
 		vector<Net>  netListVector;
 		vector<Node> nodeListVector;
 		vector<Node*> rootNodes;
 		list<Node*> criticalPath;
 		int maxBitwidth;
 		//Custom constructors
-		Datapath(vector<string>* netlistLines);
+		Datapath(vector<string> netlistLines);
 
 
 		//Default Constructor

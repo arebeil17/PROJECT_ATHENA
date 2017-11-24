@@ -7,7 +7,7 @@
 * Description: This file .cpp file contains the implementation of the Synthesis class
 */
 /**************************************************************************************************/
-#include "Synthesis.h"
+#include "synthesis.h"
 /**************************************************************************************************/
 
 //Default Constructor

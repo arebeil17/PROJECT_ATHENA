@@ -7,7 +7,7 @@
 * Description: This file .cpp file contains the implementation of the Scheduler class
 */
 /**************************************************************************************************/
-#include "Scheduler.h"
+#include "scheduler.h"
 /**************************************************************************************************/
 
 //Default Constructor

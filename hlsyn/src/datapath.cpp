@@ -19,7 +19,7 @@ Datapath::Datapath()
 }
 /**************************************************************************************************/
 //Customer constructor
-Datapath::Datapath(vector<string>* netlistLines) {
+Datapath::Datapath(vector<string> netlistLines) {
 	this->netlistLines = netlistLines;
 	maxBitwidth = 0;
 	criticalDelay = 0.0;
@@ -29,7 +29,7 @@ Datapath::Datapath(vector<string>* netlistLines) {
 int Datapath::createNetList(string* nowParsingText, string type, int width, bool signedBit) {
 	string keyWord = ", ";
 	size_t pos;
-	while ((pos = nowParsingText->find(keyWord)) != std::string::npos) {
+	while ((pos = nowParsingText->find(keyWord)) != string::npos) {
 		Net newNet;
 		newNet.type = type;
 		newNet.width = width;
@@ -43,9 +43,9 @@ int Datapath::createNetList(string* nowParsingText, string type, int width, bool
 	newNet.width = width;
 	newNet.signedBit = signedBit;
 	
-	if ((pos = nowParsingText->find("\t")) != std::string::npos)//special case, ending has "\t"
+	if ((pos = nowParsingText->find("\t")) != string::npos)//special case, ending has "\t"
 		newNet.name = nowParsingText->substr(0, pos);
-	else if ((pos = nowParsingText->find(" ")) != std::string::npos) //special case, ending has " " padding.
+	else if ((pos = nowParsingText->find(" ")) != string::npos) //special case, ending has " " padding.
 			newNet.name = nowParsingText->substr(0, pos);
 	else
 		newNet.name = *nowParsingText;
@@ -60,7 +60,7 @@ bool Datapath::createNodeInputs(string* nowParsingText, vector<Net*>* inputNets)
 	size_t  pos;
 	bool    found = false;
 
-	while ((pos = nowParsingText->find(keyWord)) != std::string::npos) {
+	while ((pos = nowParsingText->find(keyWord)) != string::npos) {
 		found_t = nowParsingText->substr(0, pos);
 		for (unsigned i = 0; i<netListVector.size(); i++) {
 			if (netListVector.at(i).name.compare(found_t) == 0) {
@@ -100,9 +100,9 @@ bool Datapath::parseNetlistLines() {
 	bool    signedBit;
 	int bitWidth;
 	size_t  pos;
-	for (unsigned int i = 0; i < netlistLines->size(); i++) {
+	for (unsigned int i = 0; i < netlistLines.size(); i++) {
 		currentLine = i; //for error checking
-		nowParsingText = netlistLines->at(i);
+		nowParsingText = netlistLines.at(i);
 		signedBit = true;
 		//Check if Input
 		if (nowParsingText.substr(0, 6) == "input ") {
@@ -112,7 +112,7 @@ bool Datapath::parseNetlistLines() {
 				nowParsingText.erase(0, 1);
 			}
 			//Determine bitwidth and create netlist
-			if (nowParsingText.find(keyWord = "Int") != std::string::npos) {
+			if (nowParsingText.find(keyWord = "Int") != string::npos) {
 				nowParsingText.erase(0, keyWord.length());
 				pos = nowParsingText.find(" ");
 				bitWidth = stoi(nowParsingText.substr(0, pos));
@@ -126,7 +126,7 @@ bool Datapath::parseNetlistLines() {
 				signedBit = false;
 				nowParsingText.erase(0, 1);
 			}
-			if (nowParsingText.find(keyWord = "Int") != std::string::npos) {
+			if (nowParsingText.find(keyWord = "Int") != string::npos) {
 				nowParsingText.erase(0, keyWord.length());
 				pos = nowParsingText.find(" ");
 				bitWidth = stoi(nowParsingText.substr(0, pos));
@@ -141,7 +141,7 @@ bool Datapath::parseNetlistLines() {
 				signedBit = false;
 				nowParsingText.erase(0, 1);
 			}
-			if (nowParsingText.find(keyWord = "Int") != std::string::npos) {
+			if (nowParsingText.find(keyWord = "Int") != string::npos) {
 				nowParsingText.erase(0, keyWord.length());
 				pos = nowParsingText.find(" ");
 				bitWidth = stoi(nowParsingText.substr(0, pos));
@@ -149,13 +149,15 @@ bool Datapath::parseNetlistLines() {
 				createNetList(&nowParsingText, "wire", bitWidth, signedBit);
 			}
 		}//Check if Register
-		else if (nowParsingText.substr(0, 9) == "register ") {
+		// obsolete assignment 2 expression 
+        //else if (nowParsingText.substr(0, 9) == "register ") {
+		else if (nowParsingText.substr(0, 9) == "variable ") {
 			nowParsingText.erase(0, 9);
 			if (nowParsingText.at(0) == 'U') {
 				signedBit = false;
 				nowParsingText.erase(0, 1);
 			}
-			if (nowParsingText.find(keyWord = "Int") != std::string::npos) {
+			if (nowParsingText.find(keyWord = "Int") != string::npos) {
 				nowParsingText.erase(0, keyWord.length());
 				pos = nowParsingText.find(" ");
 				bitWidth = stoi(nowParsingText.substr(0, pos));
@@ -171,7 +173,18 @@ bool Datapath::parseNetlistLines() {
 			Net* output;
 			vector<Net*> inputNets;
 			bool found = false;
-			if ((pos = nowParsingText.find(keyWord = " = ")) != std::string::npos) {
+
+            // erase head padding " "
+            size_t firstNotSpace = nowParsingText.find_first_not_of(" \t\f\v\n\r");
+            nowParsingText.erase(0,firstNotSpace);
+
+            if((pos = nowParsingText.find(keyWord = "{")) != string::npos ||
+                    (pos = nowParsingText.find(keyWord = "}")) != string::npos){
+                // skip if else here, only parse node and nets
+                nowParsingText.clear();
+                continue;
+            }
+			if ((pos = nowParsingText.find(keyWord = " = ")) != string::npos) {
 				found_t = nowParsingText.substr(0, pos);
 			}
 			for (unsigned i = 0; i < netListVector.size(); i++) {
@@ -188,68 +201,68 @@ bool Datapath::parseNetlistLines() {
 			if (found == false) {
 				return false; // found no output
 			}         // search operator
-			if ((pos = nowParsingText.find(keyWord = "+ 1")) != std::string::npos) {
+			if ((pos = nowParsingText.find(keyWord = "+ 1")) != string::npos) {
 				op = "INC";
 				moduleName = "INC";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "- 1")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "- 1")) != string::npos) {
 				op = "DEC";
 				moduleName = "DEC";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-            else if ((pos = nowParsingText.find(keyWord = "+ ")) != std::string::npos) {
+            else if ((pos = nowParsingText.find(keyWord = "+ ")) != string::npos) {
 				op = "ADD";
 				moduleName = "ADD";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "- ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "- ")) != string::npos) {
 				op = "SUB";
 				moduleName = "SUB";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "* ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "* ")) != string::npos) {
 				op = "MUL";
 				moduleName = "MUL";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-            else if ((pos = nowParsingText.find(keyWord = ">> ")) != std::string::npos) {
+            else if ((pos = nowParsingText.find(keyWord = ">> ")) != string::npos) {
 				op = "SHR";
 				moduleName = "SHR";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "<< ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "<< ")) != string::npos) {
 				op = "SHL";
 				moduleName = "SHL";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
 
-			else if ((pos = nowParsingText.find(keyWord = "== ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "== ")) != string::npos) {
 				op = "COMP_EQ";
 				moduleName = "COMP";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "< ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "< ")) != string::npos) {
 				op = "COMP_LT";
 				moduleName = "COMP";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "> ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "> ")) != string::npos) {
 				op = "COMP_GT";
 				moduleName = "COMP";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "? ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "? ")) != string::npos) {
 				nowParsingText.erase(pos, keyWord.length());
 				pos = nowParsingText.find(keyWord = ": ");
 				op = "MUX2x1";
@@ -257,19 +270,19 @@ bool Datapath::parseNetlistLines() {
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "/ ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "/ ")) != string::npos) {
 				op = "DIV";
 				moduleName = "DIV";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = "% ")) != std::string::npos) {
+			else if ((pos = nowParsingText.find(keyWord = "% ")) != string::npos) {
 				op = "MOD";
 				moduleName = "MOD";
 			    // Remove operator 
                 nowParsingText.erase(pos, keyWord.length());
 			}
-			else if ((pos = nowParsingText.find(keyWord = " ")) != std::string::npos&&
+			else if ((pos = nowParsingText.find(keyWord = " ")) != string::npos&&
                       pos!=(nowParsingText.length()-1)){
              return false; // no matching operator
 			}
@@ -278,7 +291,8 @@ bool Datapath::parseNetlistLines() {
 				op = "WIRE";
 				moduleName = "";
             }
-            //Only need to perform this once
+            //createNodeInputs takes input nets from nowParsingText and matches each of them with nets sotred in netListVector.
+            //Which stores nets we parsed from upper half of the text file.
 			if (!createNodeInputs(&nowParsingText, &inputNets)) return false;
 
 			Node  newNode;
@@ -319,7 +333,7 @@ void Datapath::printNodeListVector() {
 void Datapath::updateAllNodeBitwidth() {
 	for (unsigned int i = 0; i < this->nodeListVector.size(); i++) {
 		//Check if node is not a comparator, bitwidth based of output net width
-		if (this->nodeListVector.at(i).op.find("COMP") == std::string::npos) {
+		if (this->nodeListVector.at(i).op.find("COMP") == string::npos) {
 			this->nodeListVector.at(i).width = nodeListVector.at(i).output->width;
 		//else comparator node so bitwidth based off input net width 
 		}else{
@@ -527,8 +541,8 @@ void Datapath::printCriticalPathInfo(bool full) {
 bool Datapath::printAll(bool all) {
 	if (all) {
 		//for debugging prints out file read 
-		for (unsigned int i = 0; i < netlistLines->size(); i++) {
-			cout << netlistLines->at(i) << endl;
+		for (unsigned int i = 0; i < netlistLines.size(); i++) {
+			cout << netlistLines.at(i) << endl;
 		}
 		printNodeListVector();
 		printRootNodes();

@@ -28,13 +28,14 @@ int main(int argc, char *argv[]) {
 
 		if (input.readInputFile(argv[1])) {
 			
-			Datapath datapath = Datapath(&(input.netlistLines));
+			Datapath datapath = Datapath(input.netlistLines);
 
 			if (datapath.parseNetlistLines()) {
 
 				datapath.determineCriticalPath();
 
-				datapath.printAll(false);
+				//datapath.printAll(false);
+				datapath.printAll(true);
 
 				Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
 				output.makeVerilog();
