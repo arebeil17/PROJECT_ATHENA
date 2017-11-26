@@ -48,6 +48,8 @@ class Synthesis {
         bool parseBlocks_prefix();
         bool makeBlocks();
         bool buildNextBlock(Block* currentBlock, string type, unsigned int level, string condText);
+
+		void printBlocks();
 };
  
 #endif //SYNTHESIS_H

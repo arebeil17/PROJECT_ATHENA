@@ -22,6 +22,7 @@ Node::Node(){
 	signedBit = false;
 	criticalNode = NULL;
 	depth = 0;
+	parentBlockId = 0;
 }
 /**************************************************************************************************/
 //Returns a string representation of this Node
@@ -32,7 +33,7 @@ string Node::toString() {
 		result += " " + inputs.at(i)->name;
 	}
 	result += " Output: " + output->name;
-	result += " Bitwidth: " + to_string(width) + " Delay: " + to_string(delay) + " Path Delay: " + to_string(pathDelay);
+	result += " Bitwidth: " + to_string(width) + " Delay: " + /*to_string(delay) + " Path Delay: " + to_string(pathDelay) +*/ "ParentBlock Id: " + to_string(parentBlockId);
 
 	return result;
 }

@@ -38,8 +38,9 @@ int main(int argc, char *argv[]) {
 				//datapath.printAll(false);
 				datapath.printAll(true);
                 
-                Synthesis syn1(input.netlistLines, &(datapath.nodeListVector));
-                syn1.makeBlocks(); 
+                Synthesis synthesis(input.netlistLines, &(datapath.nodeListVector));
+                synthesis.makeBlocks();
+				synthesis.printBlocks();
                 //Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
 				//output.makeVerilog();
 			}

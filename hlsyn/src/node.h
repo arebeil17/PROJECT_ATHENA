@@ -27,7 +27,6 @@ class Node {
 	
 	private:
 	public:
-		Node();
 		// Variables
 		int id;
 		string op;
@@ -47,7 +46,10 @@ class Node {
 		Node* criticalNode;
 		vector<Net*> inputs;
 		Net* output;
+		int parentBlockId;
+
 		//Functions
+		Node();
 		string toString();
 		//Set delay
 		bool updateDelay();

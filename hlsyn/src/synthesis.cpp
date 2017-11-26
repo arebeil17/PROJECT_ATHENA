@@ -28,7 +28,7 @@ Synthesis::Synthesis(vector<string> netlistLines, vector<Node>* nodeListVector){
 //vector<Block*>   Synthesis::blockVector;
 //Block Synthesis::nextLevelBlock[100];        
 
-/******************************************************************************************/
+/**************************************************************************************************/
 bool Synthesis::parseBlocks_prefix(){
     unsigned int i=0;
     size_t pos,lpos;
@@ -87,6 +87,7 @@ bool Synthesis::parseBlocks_prefix(){
     };
 return true;
 }
+/**************************************************************************************************/
 bool Synthesis::parseBlocksNodes(Block* currentBlock, unsigned int currentLevel){
     string nowParsingText;
     unsigned int level = currentLevel+1;
@@ -173,10 +174,27 @@ bool Synthesis::buildNextBlock(Block* currentBlock, string type, unsigned int le
     blockId ++;
 return true;
 }
-
+/**************************************************************************************************/
 bool Synthesis::makeBlocks(){
     parseBlocks_prefix();
     buildNextBlock(NULL, "top", 0,"");         // build top block 
     parseBlocksNodes(blockVector.back(),0); //assign null pointer to top block's parent
 return true;
 }
+/**************************************************************************************************/
+void Synthesis::printBlocks(){
+
+	for (int i = 0; i < blockVector.size(); i++) {
+		cout << "--------------------------------------------------------------------------" << endl;
+		if(blockVector.at(i)->parent != NULL)
+			cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: "<<blockVector.at(i)->parent->blockId <<endl;
+		else
+			cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: " << "NULL" << endl;
+		cout << "--------------------------------------------------------------------------" << endl;
+		for (int j = 0; j < blockVector.at(i)->nodeVector.size(); j++) {
+			cout << "  " << blockVector.at(i)->nodeVector.at(j)->toString() << endl;
+		}
+	}
+
+}
+/**************************************************************************************************/

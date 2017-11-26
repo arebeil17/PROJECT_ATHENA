@@ -25,6 +25,7 @@ Block::Block()
 //Add Node pointer to current block
 void Block::addNode(Node * newNode)
 {
+	newNode->parentBlockId = this->blockId;
 	this->nodeVector.push_back(newNode);
 }
 /**************************************************************************************************/
