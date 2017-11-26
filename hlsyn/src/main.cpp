@@ -15,6 +15,7 @@
 #include "input.h"
 #include "datapath.h"
 #include "output.h"
+#include "synthesis.h"
 /**************************************************************************************************/
 
 int main(int argc, char *argv[]) {
@@ -36,9 +37,11 @@ int main(int argc, char *argv[]) {
 
 				//datapath.printAll(false);
 				datapath.printAll(true);
-
-				Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
-				output.makeVerilog();
+                
+                Synthesis syn1(input.netlistLines, &(datapath.nodeListVector));
+                syn1.makeBlocks(); 
+                //Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
+				//output.makeVerilog();
 			}
 			else {
 				cout << "\nError found in netlist file at line " << to_string(datapath.currentLine + 1)<<". Aborted netlist conversion." << endl;

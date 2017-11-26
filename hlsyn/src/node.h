@@ -32,6 +32,8 @@ class Node {
 		int id;
 		string op;
 		string moduleName;
+        // Node operation in text format
+		string statement;
 		bool visited;
 		bool marked;
 		bool signedBit;

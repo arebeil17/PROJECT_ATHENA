@@ -16,8 +16,10 @@ Block::Block()
 	this->branchConditionNet = NULL;
 	this->prev = NULL;
 	this->next = NULL;
-	this->child = NULL;
 	this->parent = NULL;
+	this->adjacent = NULL;
+    level = 0;
+    blockId = 0xFFFFFFFF;
 }
 /**************************************************************************************************/
 //Add Node pointer to current block

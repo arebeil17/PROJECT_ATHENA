@@ -311,6 +311,15 @@ bool Datapath::parseNetlistLines() {
 					newNode.signedBit = true;
 				newNode.inputs.push_back(inputNets.at(i));
 			}
+            
+            for(unsigned i = 0; i<nodeListVector.size(); i++){
+                if((newNode.output->name == nodeListVector.at(i).output->name)&&
+                    (newNode.inputs.front()->name == nodeListVector.at(i).inputs.front()->name)&&      
+                    (newNode.inputs.back()->name == nodeListVector.at(i).inputs.back()->name)&&      
+                    (newNode.op == nodeListVector.at(i).op)){
+                    return true; // duplicate statement, leave.
+                }
+            }
 			newNode.id = nodeListVector.size() + 1;
 			nodeListVector.push_back(newNode);
 		}

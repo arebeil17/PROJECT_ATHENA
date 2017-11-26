@@ -19,6 +19,7 @@
 #include <string>
 #include <math.h>
 #include <cstdio>
+#include <cmath>
 #include <algorithm>
 #include "node.h"
 #include "net.h"
@@ -30,11 +31,23 @@ using namespace std;
 class Synthesis { 
 	
 	public:
-		vector<Block*> blockVector;
 
 		//Default Constructor
 		Synthesis();
-	
+        //Custom Constructor 
+        Synthesis(vector<string> netlistLines, vector<Node>* nodeListVector);
+        
+        Block nextLevelBlock[100];        
+		vector<Block*>   blockVector;
+        vector<string>  netlistLines;
+        vector<Node>*   nodeListVector; 
+        unsigned int    currentLine;
+        unsigned int    blockId;
+
+        bool parseBlocksNodes(Block* parentBlock, unsigned int currentLevel);	
+        bool parseBlocks_prefix();
+        bool makeBlocks();
+        bool buildNextBlock(Block* currentBlock, string type, unsigned int level, string condText);
 };
  
 #endif //SYNTHESIS_H

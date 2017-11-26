@@ -28,13 +28,17 @@ class Block {
 
 	public:
 		Net * branchConditionNet;
+        string  condText;
 		//Block Pointers
 		Block * prev;
 		Block * next;
 		Block * parent;
-		Block * child;
+		vector<Block *> children;
 		Block * adjacent;
 		vector<Node *> nodeVector;
+        string type;
+        unsigned int blockId;
+        unsigned int level;
 		
 		//Constructor
 		Block();
