@@ -33,7 +33,7 @@ string Node::toString() {
 		result += " " + inputs.at(i)->name;
 	}
 	result += " Output: " + output->name;
-	result += " Bitwidth: " + to_string(width) + " Delay: " + /*to_string(delay) + " Path Delay: " + to_string(pathDelay) +*/ "ParentBlock Id: " + to_string(parentBlockId);
+	result += " Bitwidth: " + to_string(width) +/*" Delay: " + to_string(delay) + " Path Delay: " + to_string(pathDelay) +*/ " ParentBlock Id: " + to_string(parentBlockId);
 
 	return result;
 }

@@ -175,6 +175,25 @@ bool Synthesis::buildNextBlock(Block* currentBlock, string type, unsigned int le
 return true;
 }
 /**************************************************************************************************/
+void Synthesis::setAllBlockPointers(){
+	
+	for (unsigned int i = 1; i < blockVector.size(); i++) {
+		
+		for (unsigned int j = i + 1; j < blockVector.size(); j++) {
+				if (blockVector.at(i)->parent->blockId == blockVector.at(j)->parent->blockId) {
+					blockVector.at(i)->next = blockVector.at(j);
+					break;
+				}
+		}
+		for (unsigned int j = 1; j < blockVector.size(); j++) {
+			if ((blockVector.at(i)->blockId == blockVector.at(j)->parent->blockId) && (i!=j) ) {
+				blockVector.at(i)->children.push_back(blockVector.at(j));
+			}
+		}
+	}
+
+}
+/**************************************************************************************************/
 bool Synthesis::makeBlocks(){
     parseBlocks_prefix();
     buildNextBlock(NULL, "top", 0,"");         // build top block 
@@ -186,10 +205,21 @@ void Synthesis::printBlocks(){
 
 	for (int i = 0; i < blockVector.size(); i++) {
 		cout << "--------------------------------------------------------------------------" << endl;
-		if(blockVector.at(i)->parent != NULL)
-			cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: "<<blockVector.at(i)->parent->blockId <<endl;
-		else
-			cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: " << "NULL" << endl;
+		if (blockVector.at(i)->parent != NULL) {
+			if (blockVector.at(i)->next != NULL) {
+				cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: " << blockVector.at(i)->parent->blockId << " Next Block: " << blockVector.at(i)->next->blockId;
+			}else {
+				cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: " << blockVector.at(i)->parent->blockId << " Next Block: " << "NULL";
+			}
+			cout << " Children: ";
+			for (unsigned int j = 0; j < blockVector.at(i)->children.size(); i++) {
+				cout << " " << blockVector.at(i)->children.at(j)->blockId;
+			}
+			cout << endl;
+		}
+		else {
+			cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: " << "NULL" << " Next Block: " << "NULL" << endl;
+		}
 		cout << "--------------------------------------------------------------------------" << endl;
 		for (int j = 0; j < blockVector.at(i)->nodeVector.size(); j++) {
 			cout << "  " << blockVector.at(i)->nodeVector.at(j)->toString() << endl;

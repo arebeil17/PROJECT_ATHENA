@@ -49,6 +49,8 @@ class Synthesis {
         bool makeBlocks();
         bool buildNextBlock(Block* currentBlock, string type, unsigned int level, string condText);
 
+		void setAllBlockPointers();
+
 		void printBlocks();
 };
  
