@@ -212,7 +212,7 @@ void Synthesis::printBlocks(){
 				cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: " << blockVector.at(i)->parent->blockId << " Next Block: " << "NULL";
 			}
 			cout << " Children: ";
-			for (unsigned int j = 0; j < blockVector.at(i)->children.size(); i++) {
+			for (unsigned int j = 0; j < blockVector.at(i)->children.size(); j++) {
 				cout << " " << blockVector.at(i)->children.at(j)->blockId;
 			}
 			cout << endl;
