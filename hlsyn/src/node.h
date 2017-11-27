@@ -59,7 +59,8 @@ class Node {
 		float getDelay(string op, int bitwidth);
 		//compute node delay
 		void computeDelay();
-
+		//Reset Traverse Parameters
+		void reset();
 };
  
 #endif //Node_H

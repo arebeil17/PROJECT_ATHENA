@@ -39,6 +39,8 @@ class Block {
         string type;
         unsigned int blockId;
         unsigned int level;
+		int timeConstraint;
+		bool scheduled;
 		
 		//Constructor
 		Block();

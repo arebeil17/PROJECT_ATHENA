@@ -17,8 +17,22 @@ Scheduler::Scheduler()
 }
 
 /**************************************************************************************************/
-void Scheduler::forceDirectedScheduling(Block* block)
-{
+void Scheduler::forceDirectedScheduling(Block* block){
+
+}
+/**************************************************************************************************/
+void Scheduler::determineAlapSchecdule(Block * block){
+
+	if (block->timeConstraint > 0) {
+		//Reset all traverse Parameters
+		block->resetAll();
+
+		queue<Node*> nodeQueue;
+		Node* currentNode;
+
+	}
+	//Scheduling failed, constraint not met
+	block->scheduled = false;
 }
 /**************************************************************************************************/
 
