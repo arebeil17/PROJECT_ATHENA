@@ -46,7 +46,7 @@ class Block {
 		Block();
 		//Add Node pointer to current block
 		void addNode(Node * newNode);
-
+        void resetAll();
 };
 
 #endif //Block_H

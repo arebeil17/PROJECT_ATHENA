@@ -13,6 +13,9 @@
 //Default Constructor
 Net::Net()
 {
-
+		width = 0;
+		signedBit = true;
+		available = true; 
+		nAvailable = true; 
 }
 /**************************************************************************************************/

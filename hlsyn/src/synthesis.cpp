@@ -203,7 +203,7 @@ return true;
 /**************************************************************************************************/
 void Synthesis::printBlocks(){
 
-	for (int i = 0; i < blockVector.size(); i++) {
+	for (unsigned int i = 0; i < blockVector.size(); i++) {
 		cout << "--------------------------------------------------------------------------" << endl;
 		if (blockVector.at(i)->parent != NULL) {
 			if (blockVector.at(i)->next != NULL) {
@@ -221,10 +221,21 @@ void Synthesis::printBlocks(){
 			cout << "Block: " << blockVector.at(i)->blockId << " Parent Block: " << "NULL" << " Next Block: " << "NULL" << endl;
 		}
 		cout << "--------------------------------------------------------------------------" << endl;
-		for (int j = 0; j < blockVector.at(i)->nodeVector.size(); j++) {
+		for (unsigned int j = 0; j < blockVector.at(i)->nodeVector.size(); j++) {
 			cout << "  " << blockVector.at(i)->nodeVector.at(j)->toString() << endl;
 		}
 	}
 
 }
+/**************************************************************************************************/
+bool Synthesis::setBlockConstraint(int timeConstraint){
+ 
+    //set Block contraint function placeholer
+    for(unsigned int i =0; i<blockVector.size(); i++){
+        if(blockVector.at(i)->type=="component"){
+            blockVector.at(i)->timeConstraint=timeConstraint;
+        }
+    }
+return true;
+}    
 /**************************************************************************************************/

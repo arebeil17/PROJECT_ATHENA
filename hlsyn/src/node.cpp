@@ -23,13 +23,17 @@ Node::Node(){
 	criticalNode = NULL;
 	depth = 0;
 	parentBlockId = 0;
-	int parentBlockId;
 	//New Variables for FDS
 	alapTime = 0;
 	asapTime = 0;
 	scheduleTime = 0;
 	executionTime = 0;
 	frameWidth = 0;
+	
+    asapCount = 1;
+    nAsapCount = 1;
+	nVisited = false;
+	nMarked = false;
 }
 /**************************************************************************************************/
 //Returns a string representation of this Node
