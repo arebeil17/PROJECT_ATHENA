@@ -49,8 +49,6 @@ bool Scheduler::asapSchedule(Block * block){
         block->nodeVector[i]->output->nAvailable = false;
     }
     int exec_cycle = 1;
-    //vector start from time 1 too;
-    //asap.push_back(newScheduled);
     while(scheduleNotDone){
         vector<Node*> newScheduled;
         //executing phase
