@@ -47,7 +47,11 @@ class Node {
 		vector<Net*> inputs;
 		Net* output;
 		int parentBlockId;
-
+		int alapTime;
+		int asapTime;
+		int scheduleTime;
+		int executionTime;
+		int frameWidth;
 		//Functions
 		Node();
 		string toString();

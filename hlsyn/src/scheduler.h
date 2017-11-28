@@ -37,6 +37,8 @@ class Scheduler {
 		void forceDirectedScheduling(Block* block);
 
 		void determineAlapSchecdule(Block * block);
+
+		void depthFirstSearch(Node * source, bool alap);
 		
 };
  
