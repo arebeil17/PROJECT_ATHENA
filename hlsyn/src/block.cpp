@@ -38,3 +38,23 @@ void Block::resetAll(){
 	}
 }
 /**************************************************************************************************/
+//Find Root Nodes
+bool Block::findRootNodes() {
+	unsigned int nodeInputCount = 0;
+
+	for (unsigned int i = 0; i < this->nodeVector.size(); i++) {
+		//Check all node inputs are of type input net
+		for (unsigned int j = 0; j < this->nodeVector.at(i)->inputs.size(); j++) {
+			if (!this->nodeVector.at(i)->inputs.at(j)->type.compare("input"))
+				nodeInputCount++;
+		}
+		//Check if current Nodes nets are all inputs
+		if (nodeInputCount == this->nodeVector.at(i)->inputs.size()) {
+			//Add to root node vector
+			rootNodes.push_back(this->nodeVector.at(i));
+		}
+		nodeInputCount = 0;
+	}
+	if (this->rootNodes.size() > 0) return true;
+	else return false;
+}

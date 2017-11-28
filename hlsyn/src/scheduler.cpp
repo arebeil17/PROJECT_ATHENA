@@ -27,14 +27,11 @@ void Scheduler::determineAlapSchecdule(Block * block){
 		//Reset all traverse Parameters
 		block->resetAll();
 
-		queue<Node*> nodeQueue;
-		Node* currentNode;
 
 	}
 	//Scheduling failed, constraint not met
 	block->scheduled = false;
 }
-/**************************************************************************************************/
 /**************************************************************************************************/
 bool Scheduler::asapSchedule(Block * block){
 	if (block->timeConstraint <= 0) {
@@ -147,6 +144,13 @@ bool Scheduler::asapSchedule(Block * block){
         }
     }
 return true;
+}
+
+void Scheduler::depthFirstSearch(Node * source, bool alap){
+	if (alap) {
+		queue<Node*> nodeQueue;
+		Node* currentNode;
+	}
 }
 /**************************************************************************************************/
 

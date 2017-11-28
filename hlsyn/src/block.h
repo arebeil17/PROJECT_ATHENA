@@ -36,6 +36,7 @@ class Block {
 		vector<Block *> children;
 		Block * adjacent;
 		vector<Node *> nodeVector;
+		vector<Node*> rootNodes;
         string type;
         unsigned int blockId;
         unsigned int level;
@@ -47,6 +48,9 @@ class Block {
 		//Add Node pointer to current block
 		void addNode(Node * newNode);
         void resetAll();
+		//Reset all nodes' traverse paraneters
+		//Find root nodes
+		bool findRootNodes();
 };
 
 #endif //Block_H

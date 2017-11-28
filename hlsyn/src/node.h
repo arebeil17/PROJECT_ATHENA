@@ -50,15 +50,15 @@ class Node {
 		vector<Net*> inputs;
 		Net* output;
 		int parentBlockId;
-        unsigned int alapTime;
-        unsigned int asapTime;
         // ASAP execution count
         unsigned int asapCount;
         unsigned int nAsapCount;
-        unsigned int scheduleTime;
-        unsigned int executionTime;
-        unsigned int frameWidth;
 
+		int alapTime;
+		int asapTime;
+		int scheduleTime;
+		int executionTime;
+		int frameWidth;
 		//Functions
 		Node();
 		string toString();
