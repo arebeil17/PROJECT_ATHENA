@@ -32,6 +32,8 @@ class Net {
 		int width;
 		string type;
 		bool signedBit;
+		bool available; // available net for ASAP scheduling
+		bool nAvailable; // available net for ASAP scheduling
 		//Functions
 };
 #endif //NET_H

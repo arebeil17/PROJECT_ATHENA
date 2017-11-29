@@ -37,6 +37,9 @@ class Node {
 		bool scheduled;
 		bool visited;
 		bool marked;
+        // ASAP flag
+		bool nVisited;
+		bool nMarked;
 		bool signedBit;
 		//Delay to reach node
 		float pathDelay;
@@ -49,6 +52,10 @@ class Node {
 		vector<Net*> inputs;
 		Net* output;
 		int parentBlockId;
+        // ASAP execution count
+        unsigned int asapCount;
+        unsigned int nAsapCount;
+
 		int alapTime;
 		int asapTime;
 		int scheduleTime;

@@ -48,6 +48,7 @@ class Synthesis {
         bool parseBlocks_prefix();
         bool makeBlocks();
         bool buildNextBlock(Block* currentBlock, string type, unsigned int level, string condText);
+        bool setBlockConstraint(int timeConstraint);
 
 		void setAllBlockPointers();
 

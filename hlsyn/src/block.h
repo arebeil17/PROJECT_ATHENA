@@ -47,11 +47,10 @@ class Block {
 		Block();
 		//Add Node pointer to current block
 		void addNode(Node * newNode);
+        void resetAll();
 		//Reset all nodes' traverse paraneters
-		void resetAll();
 		//Find root nodes
 		void findLastNodes();
-
 };
 
 #endif //Block_H

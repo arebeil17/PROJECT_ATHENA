@@ -16,6 +16,7 @@
 #include "datapath.h"
 #include "output.h"
 #include "synthesis.h"
+#include "scheduler.h"
 /**************************************************************************************************/
 
 int main(int argc, char *argv[]) {
@@ -41,7 +42,16 @@ int main(int argc, char *argv[]) {
                 Synthesis synthesis(input.netlistLines, &(datapath.nodeListVector));
                 synthesis.makeBlocks();
 				synthesis.setAllBlockPointers();
+				synthesis.setBlockConstraint(10);
 				synthesis.printBlocks();
+                
+                Scheduler scheduler = Scheduler();
+                for(unsigned int i =0; i<synthesis.blockVector.size(); i++){
+                    if(synthesis.blockVector.at(i)->type=="component"){
+                        scheduler.asapSchedule(synthesis.blockVector.at(i));
+                    }
+                }
+                    
                 //Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
 				//output.makeVerilog();
 			}

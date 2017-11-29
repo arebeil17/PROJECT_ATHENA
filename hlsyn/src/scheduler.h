@@ -28,15 +28,17 @@
 using namespace std;
 
 class Scheduler { 
-	
+    private: 	
 	public:
 		//Default Constructor
 		Scheduler();
 
-		//Perform all the steps of Force Directed Scheduling on current block's nodes
+        vector<vector<Node*>> asap;
+		
+        //Perform all the steps of Force Directed Scheduling on current block's nodes
 		void forceDirectedScheduling(Block* block);
-
 		bool determineAlapSchecdule(Block * block);
+		bool asapSchedule(Block * block);
 		
 };
  
