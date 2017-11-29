@@ -36,9 +36,7 @@ class Scheduler {
 		//Perform all the steps of Force Directed Scheduling on current block's nodes
 		void forceDirectedScheduling(Block* block);
 
-		void determineAlapSchecdule(Block * block);
-
-		void depthFirstSearch(Node * source, bool alap);
+		bool determineAlapSchecdule(Block * block);
 		
 };
  

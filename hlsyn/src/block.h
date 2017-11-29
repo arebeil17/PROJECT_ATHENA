@@ -50,7 +50,7 @@ class Block {
 		//Reset all nodes' traverse paraneters
 		void resetAll();
 		//Find root nodes
-		bool findRootNodes();
+		void findLastNodes();
 
 };
 

@@ -38,23 +38,30 @@ void Block::resetAll(){
 	}
 }
 /**************************************************************************************************/
-//Find Root Nodes
-bool Block::findRootNodes() {
-	unsigned int nodeInputCount = 0;
+//Find last Nodes in block
+void Block::findLastNodes() {
+	
+	Node * currentNode;
 
 	for (unsigned int i = 0; i < this->nodeVector.size(); i++) {
-		//Check all node inputs are of type input net
-		for (unsigned int j = 0; j < this->nodeVector.at(i).inputs.size(); j++) {
-			if (!this->nodeVector.at(i).inputs.at(j)->type.compare("input"))
-				nodeInputCount++;
+		
+		currentNode = this->nodeVector.at(i);
+
+		//Check if current Node has children
+		if (!currentNode->childNodes.empty) {
+			//Check if children 
+			for (int j = 0; j < currentNode->childNodes.size(); j++) {
+				
+				if (this->blockId > currentNode->childNodes.at(j)->parentBlockId) {
+					currentNode->last = true;
+					break;
+				}
+
+			}
 		}
-		//Check if current Nodes nets are all inputs
-		if (nodeInputCount == this->nodeVector.at(i).inputs.size()) {
-			//Add to root node vector
-			rootNodes.push_back(&(this->nodeVector.at(i)));
+		else { //No children
+			currentNode->last = true;
 		}
-		nodeInputCount = 0;
+
 	}
-	if (this->rootNodes.size() > 0) return true;
-	else return false;
 }

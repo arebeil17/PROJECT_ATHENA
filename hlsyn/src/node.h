@@ -33,6 +33,8 @@ class Node {
 		string moduleName;
         // Node operation in text format
 		string statement;
+		bool last;
+		bool scheduled;
 		bool visited;
 		bool marked;
 		bool signedBit;

@@ -16,7 +16,8 @@ Node::Node(){
 	pathDelay = 0.0;
 	delay = 0.0;
 	width = 0;
-
+	last = false;
+	scheduled = false;
 	visited = false;
 	marked = false;
 	signedBit = false;
@@ -219,6 +220,7 @@ void Node::computeDelay()
 /**************************************************************************************************/
 //Reset Traverse Parameters
 void Node::reset(){
+	scheduled = false;
 	visited = false;
 	marked = false;
 }
