@@ -38,7 +38,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 		int remainingTime = block->timeConstraint;
 
 		//Schedule the last nodes in graph first
-		for (int i = 0; i < block->nodeVector.size(); i++) {
+		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
 			remainingTime = block->timeConstraint;
 
@@ -49,7 +49,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 				currentNode->scheduled = true;
 
 				//Add all current nodes predecessors to queue
-				for (int j = 0; j < currentNode->parentNodes.size(); j++) {
+				for (unsigned int j = 0; j < currentNode->parentNodes.size(); j++) {
 					parentNode = currentNode->parentNodes.at(j);
 					
 					//Check that parentNode is within current block
@@ -66,10 +66,10 @@ bool Scheduler::determineAlapSchedule(Block * block){
 		}
 		//Schedule All the predecessors
 		while (!predecessors.empty()) {
-			for (int i = 0; i < predecessors.size(); i++) {
+			for (unsigned int i = 0; i < predecessors.size(); i++) {
 				ready = true;
 				currentNode = predecessors.at(i);
-				for (int i = 0; i < currentNode->childNodes.size(); i++) {
+				for (unsigned int i = 0; i < currentNode->childNodes.size(); i++) {
 					childNode = currentNode->childNodes.at(i);
 					//Ensure child is in current block
 					if (std::find(block->nodeVector.begin(), block->nodeVector.end(),
@@ -84,7 +84,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 				if (ready) {
 					earliestAlapTime = block->timeConstraint;
 					maxExecuteTime = 0;
-					for (int k = 0; k < currentNode->childNodes.size(); k++) {
+					for (unsigned int k = 0; k < currentNode->childNodes.size(); k++) {
 						childNode = currentNode->childNodes.at(k);
 						if (std::find(block->nodeVector.begin(), block->nodeVector.end(),
 							childNode) != block->nodeVector.end()) {
@@ -102,7 +102,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 					currentNode->scheduled = true;
 				}
 				//Add all current nodes predecessors to queue
-				for (int j = 0; j < currentNode->parentNodes.size(); j++) {
+				for (unsigned int j = 0; j < currentNode->parentNodes.size(); j++) {
 
 					parentNode = currentNode->parentNodes.at(j);
 					//Check that parentNode is within current block
@@ -121,7 +121,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 			}
 		}
 		//Check that all scheduled Alap times are valid
-		for (int i = 0; i < block->nodeVector.size(); i++) {
+		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
 			if (currentNode->alapTime > block->timeConstraint || currentNode->alapTime < 0)
 				return false;
@@ -149,12 +149,19 @@ bool Scheduler::asapSchedule(Block * block){
         block->nodeVector[i]->output->available = false;
         block->nodeVector[i]->output->nAvailable = false;
     }
+
+    //Test schedule time!
+    //block->nodeVector.at(4)->scheduleTime = 0;
+
     int exec_cycle = 1;
     while(scheduleNotDone){
         vector<Node*> newScheduled;
         //executing phase
         for(unsigned int i = 0; i< block->nodeVector.size();i++){
             bool nodeAvailable = true;
+            // if the node has been schedule, wait the schedule time
+
+            nodeAvailable &= exec_cycle >= block->nodeVector.at(i)->scheduleTime;
             for(unsigned int j = 0; j< block->nodeVector.at(i)->inputs.size();j++){
                 if(block->nodeVector.at(i)->inputs.at(j)){
                     nodeAvailable &= block->nodeVector.at(i)->inputs.at(j)->available;
@@ -163,6 +170,11 @@ bool Scheduler::asapSchedule(Block * block){
             if(nodeAvailable&&
                //node available but not scheduled yet
                (block->nodeVector.at(i)->visited==false)){
+                // mark node visited, push to the vector, and mark asapTime 
+				block->nodeVector.at(i)->nVisited = true;
+				newScheduled.push_back(block->nodeVector.at(i));
+				block->nodeVector.at(i)->asapTime = exec_cycle;
+                
                 if(block->nodeVector.at(i)->op=="MUL"){
                     block->nodeVector.at(i)->nAsapCount++;
                 }
@@ -176,9 +188,6 @@ bool Scheduler::asapSchedule(Block * block){
                     block->nodeVector.at(i)->nMarked=true;
                     block->nodeVector.at(i)->output->nAvailable=true;
                 }
-				block->nodeVector.at(i)->nVisited = true;
-				newScheduled.push_back(block->nodeVector.at(i));
-				block->nodeVector.at(i)->asapTime = exec_cycle;
             }
             else if((block->nodeVector.at(i)->visited==true)&&
                     //node scheduled but not finished yet
@@ -224,7 +233,7 @@ bool Scheduler::asapSchedule(Block * block){
         }
         scheduleNotDone = !done;
         if(!done){
-            //one cycle end, and there are new scheduled nodes, push to array
+            //one cycle end, if there are new scheduled nodes, push to array
             asap.push_back(newScheduled);
         }
 
