@@ -98,7 +98,8 @@ bool Scheduler::determineAlapSchedule(Block * block){
 						}
 					}
 					remainingTime = (earliestAlapTime - currentNode->executionTime);
-					currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
+					//currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
+					currentNode->alapTime = remainingTime;
 					currentNode->scheduled = true;
 				}
 				//Add all current nodes predecessors to queue
@@ -115,6 +116,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 						}
 					}
 				}
+				//If currentNode is scheduled remove it from predecessor queue
 				if (currentNode->scheduled) {
 					predecessors.erase(predecessors.begin() + i);
 				}
@@ -164,26 +166,25 @@ bool Scheduler::asapSchedule(Block * block){
                //node available but not scheduled yet
                (block->nodeVector.at(i)->visited==false)){
                 if(block->nodeVector.at(i)->op=="MUL"){
-                    block->nodeVector.at(i)->nVisited=true;
                     block->nodeVector.at(i)->nAsapCount++;
                     newScheduled.push_back(block->nodeVector.at(i));
                 }
                 else if(block->nodeVector.at(i)->op=="DIV"){
-                    block->nodeVector.at(i)->nVisited=true;
                     block->nodeVector.at(i)->nAsapCount++;
                     newScheduled.push_back(block->nodeVector.at(i));
                 }
                 else if(block->nodeVector.at(i)->op=="MOD"){
-                    block->nodeVector.at(i)->nVisited=true;
                     block->nodeVector.at(i)->nAsapCount++;
                     newScheduled.push_back(block->nodeVector.at(i));
                 }
                 else {
-                    block->nodeVector.at(i)->nVisited=true;
                     block->nodeVector.at(i)->nMarked=true;
                     block->nodeVector.at(i)->output->nAvailable=true;
                     newScheduled.push_back(block->nodeVector.at(i));
                 }
+				block->nodeVector.at(i)->nVisited = true;
+				block->nodeVector.at(i)->alapTime = exec_cycle;
+				newScheduled.push_back(block->nodeVector.at(i));
             }
             else if((block->nodeVector.at(i)->visited==true)&&
                     //node scheduled but not finished yet

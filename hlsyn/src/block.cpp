@@ -31,7 +31,7 @@ void Block::addNode(Node * newNode)
 	this->nodeVector.push_back(newNode);
 }
 /**************************************************************************************************/
-//Reset all nodes' traverse paraneters
+//Reset all nodes' traverse parameters
 void Block::resetAll(){
 	for (unsigned int i = 0; i < nodeVector.size(); i++) {
 		nodeVector.at(i)->reset();
@@ -83,7 +83,10 @@ void Block::printSchedulingInfo(){
 		}
 	}
 	else {
-		cout << "Not scheduled." << endl;
+		if(this->nodeVector.size() == 0) 
+			cout << "Not scheduled. Block Empty." << endl;
+		else
+			cout << "Not scheduled. Constraint cannot not be met for specified netlist file." << endl;
 	}
 	cout << endl;
 }
