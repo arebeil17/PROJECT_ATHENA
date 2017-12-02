@@ -25,11 +25,11 @@ Node::Node(){
 	depth = 0;
 	parentBlockId = 0;
 	//New Variables for FDS
+	forceData = ForceData();
 	alapTime = 0;
 	asapTime = 0;
 	scheduleTime = 0;
 	executionTime = 0;
-	frameWidth = 0;
 	
     asapCount = 1;
     nAsapCount = 1;

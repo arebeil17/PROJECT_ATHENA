@@ -98,7 +98,8 @@ bool Scheduler::determineAlapSchedule(Block * block){
 						}
 					}
 					remainingTime = (earliestAlapTime - currentNode->executionTime);
-					currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
+					//currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
+					currentNode->alapTime = remainingTime;
 					currentNode->scheduled = true;
 				}
 				//Add all current nodes predecessors to queue
@@ -115,6 +116,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 						}
 					}
 				}
+				//If currentNode is scheduled remove it from predecessor queue
 				if (currentNode->scheduled) {
 					predecessors.erase(predecessors.begin() + i);
 				}

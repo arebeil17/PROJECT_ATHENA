@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
                 synthesis.makeBlocks();
 				synthesis.setAllBlockPointers();
 				synthesis.setBlockConstraint(10);
-				synthesis.printBlocks();
+				//synthesis.printBlocks();
                 
                 Scheduler scheduler = Scheduler();
                 for(unsigned int i = 0; i<synthesis.blockVector.size(); i++){

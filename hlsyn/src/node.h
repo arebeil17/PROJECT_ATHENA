@@ -19,7 +19,7 @@
 #include <cstdio>
 #include "net.h"
 #include "delay.h"
-
+#include "forceData.h"
 /**************************************************************************************************/
 using namespace std;
 
@@ -55,12 +55,12 @@ class Node {
         // ASAP execution count
         unsigned int asapCount;
         unsigned int nAsapCount;
+		//FDS Variables
 
 		int alapTime;
 		int asapTime;
 		int scheduleTime;
 		int executionTime;
-		int frameWidth;
 		//Functions
 		Node();
 		string toString();
