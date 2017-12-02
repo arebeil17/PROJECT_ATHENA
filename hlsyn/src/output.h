@@ -48,6 +48,7 @@ class Output {
         bool makeEnd();
         bool makeVerilog();
         string getNetMatched(unsigned int i, string io, int numOfNets);
+		bool generateHLSM();
 };
  
 #endif //OUTPUT_H

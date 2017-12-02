@@ -21,8 +21,6 @@ Output::Output(char *outputFile, vector<Net>*  netListVector, vector<Node>* node
         this->nodeListVector= nodeListVector;
 }
 /**************************************************************************************************/
-
-
 bool Output::dumpVerilogText(){
     ofstream outputFS;
     outputFS.open(outputFile);
@@ -39,7 +37,7 @@ bool Output::dumpVerilogText(){
 		return true;
 	}
 }
-
+/**************************************************************************************************/
 bool Output::preMakeProcess(){
     weHaveRegister = false;
     for(unsigned int i=0; i<nodeListVector->size(); i++){
@@ -53,6 +51,7 @@ bool Output::preMakeProcess(){
     }
 return true;
 }
+/**************************************************************************************************/
 bool Output::makeHead(){
     string thisModule(outputFile);
     thisModule = thisModule.substr(0, thisModule.size()-2); // remove .v extention
@@ -75,6 +74,7 @@ bool Output::makeHead(){
     verilogText.replace(verilogText.end()-2,verilogText.end(),");\n");
 return true;
 }
+/**************************************************************************************************/
 string Output::getNetMatched(unsigned int i, string io, int numOfNets){
    string result;
    int netWidth;
@@ -114,6 +114,7 @@ string Output::getNetMatched(unsigned int i, string io, int numOfNets){
     }
 return result;
 }
+/**************************************************************************************************/
 bool Output::makeNets(){
     // loop over inputs
     for(unsigned int i=0; i<netListVector->size(); i++){
@@ -142,6 +143,7 @@ bool Output::makeNets(){
     }
 return true;
 }
+/**************************************************************************************************/
 bool Output::makeNodes(){
     for(unsigned int i=0; i<nodeListVector->size(); i++){
         verilogText += "\t"; 
@@ -192,11 +194,12 @@ bool Output::makeNodes(){
     }
 return true;
 }
+/**************************************************************************************************/
 bool Output::makeEnd(){
             verilogText += "endmodule";
 return true;
 }
-
+/**************************************************************************************************/
 bool Output::makeVerilog(){
     preMakeProcess();
     makeHead();
@@ -205,4 +208,15 @@ bool Output::makeVerilog(){
     makeEnd();
     dumpVerilogText();
 return true;
+}
+/**************************************************************************************************/
+bool Output::generateHLSM(){
+	//preMakeProcess();
+	makeHead();
+	makeNets();
+	//makeNodes();
+	makeEnd();
+	dumpVerilogText();
+
+	return false;
 }

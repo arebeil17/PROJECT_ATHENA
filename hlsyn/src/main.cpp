@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     /* Check for the correct number of command line arguments. If incorrect
     *  provide a simple usage message to assist user
     */
-    if(argc == 3){
+    if(argc == 4){
        
 		Input input;
 
@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
                     }
                 }
                     
-                //Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
-				//output.makeVerilog();
+                Output output(argv[3], &(datapath.netListVector), &(datapath.nodeListVector));
+				output.generateHLSM();
 			}
 			else {
 				cout << "\nError found in netlist file at line " << to_string(datapath.currentLine + 1)<<". Aborted netlist conversion." << endl;
