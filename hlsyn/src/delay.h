@@ -11,10 +11,6 @@
  */
  /**************************************************************************************************/
 //DELAY DEFINES
-#define ALU_CYCLES 1
-#define MULT_CYCLES 2
-#define DIV_CYCLES 3
-#define MOD_CYCLES 3
 //REGISTER DELAY
 #define REG_1B 2.616
 #define REG_2B 2.644

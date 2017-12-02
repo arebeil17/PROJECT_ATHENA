@@ -12,12 +12,9 @@
 /**************************************************************************************************/
 #include <vector>
 #include <iostream>
-#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <cstdarg>
-#include <cstring>
 #include <math.h>
 #include <cstdio>
 #include "node.h"
@@ -54,9 +51,6 @@ class Block {
 		//Reset all nodes' traverse paraneters
 		//Find root nodes
 		void findLastNodes();
-
-		void printSchedulingInfo();
-		
 };
 
 #endif //Block_H

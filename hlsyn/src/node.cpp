@@ -67,8 +67,6 @@ float Node::getDelay() {
 //Get delay based off operation and bitwidth
 float Node::getDelay(string op, int bitwidth)
 {
-	executionTime = ALU_CYCLES;
-
 	if (!op.compare("REG")) {
 		switch (bitwidth) {
 			case 1:  return REG_1B;
@@ -100,7 +98,6 @@ float Node::getDelay(string op, int bitwidth)
 		}
 	}
 	if (!op.compare("MUL")) {
-		executionTime = MULT_CYCLES;
 		switch (bitwidth) {
 			case 1:  return MUL_1B;
 			case 2:  return MUL_2B;
@@ -157,7 +154,6 @@ float Node::getDelay(string op, int bitwidth)
 	}
 
 	if (!op.compare("DIV")) {
-		executionTime = DIV_CYCLES;
 		switch (bitwidth) {
 			case 1:  return DIV_1B;
 			case 2:  return DIV_2B;
@@ -169,7 +165,6 @@ float Node::getDelay(string op, int bitwidth)
 	}
 
 	if (!op.compare("MOD")) {
-		executionTime = MOD_CYCLES;
 		switch (bitwidth) {
 			case 1:  return MOD_1B;
 			case 2:  return MOD_2B;

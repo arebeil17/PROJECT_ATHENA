@@ -21,117 +21,81 @@ void Scheduler::forceDirectedScheduling(Block* block){
 
 }
 /**************************************************************************************************/
-bool Scheduler::determineAlapSchedule(Block * block){
+bool Scheduler::determineAlapSchecdule(Block * block){
 
 	if (block->timeConstraint > 0) {
 		//Reset all traverse Parameters
 		block->resetAll();
 		block->findLastNodes();
 
-		bool ready = false;
+		Node* startNode;
 		Node* currentNode;
 		Node* parentNode;
 		Node* childNode;
 		int earliestAlapTime = 0;
 		int maxExecuteTime = 0;
-		vector<Node*> predecessors;
+		queue<Node*> predecessors;
 		int remainingTime = block->timeConstraint;
 
-		//Schedule the last nodes in graph first
 		for (int i = 0; i < block->nodeVector.size(); i++) {
-			currentNode = block->nodeVector.at(i);
+			startNode = block->nodeVector.at(i);
 			remainingTime = block->timeConstraint;
 
-			if (currentNode->last && !currentNode->scheduled) {
-				
-				currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
-				currentNode->marked = true;
-				currentNode->scheduled = true;
-
-				//Add all current nodes predecessors to queue
-				for (int j = 0; j < currentNode->parentNodes.size(); j++) {
-					parentNode = currentNode->parentNodes.at(j);
-					
-					//Check that parentNode is within current block
-					if (std::find(block->nodeVector.begin(), block->nodeVector.end(),
-						parentNode) != block->nodeVector.end()) {
-
-						if (!parentNode->marked) {
-							predecessors.push_back(parentNode);
-							parentNode->marked = true;
-						}
-					}
-				}
-			}
-		}
-		//Schedule All the predecessors
-		while (!predecessors.empty()) {
-			for (int i = 0; i < predecessors.size(); i++) {
-				ready = true;
-				currentNode = predecessors.at(i);
-				for (int i = 0; i < currentNode->childNodes.size(); i++) {
-					childNode = currentNode->childNodes.at(i);
-					//Ensure child is in current block
-					if (std::find(block->nodeVector.begin(), block->nodeVector.end(),
-						childNode) != block->nodeVector.end()) {
-						if (!childNode->scheduled) {
-							ready = false;
-							break;
-						}
-					}
-				}
-				//Schedule current node if ready, all child nodes scheduled
-				if (ready) {
-					earliestAlapTime = block->timeConstraint;
-					maxExecuteTime = 0;
-					for (int k = 0; k < currentNode->childNodes.size(); k++) {
-						childNode = currentNode->childNodes.at(k);
-						if (std::find(block->nodeVector.begin(), block->nodeVector.end(),
-							childNode) != block->nodeVector.end()) {
-							if (childNode->executionTime >= maxExecuteTime) {
-								maxExecuteTime = childNode->executionTime;
-							}
-							if ((childNode->scheduled)
-								&& (childNode->alapTime <= earliestAlapTime)) {
-								earliestAlapTime = childNode->alapTime;
+			if (startNode->last && !startNode->scheduled) {
+				currentNode = startNode;
+				while (currentNode != NULL) {
+					//schedule current node
+					//Determine lastScheduled time
+					if (!currentNode->last) {
+						earliestAlapTime = block->timeConstraint;
+						maxExecuteTime = 0;
+						for (int k = 0; k < currentNode->childNodes.size(); k++) {
+							childNode = currentNode->childNodes.at(k);
+							if (std::find(block->nodeVector.begin(), block->nodeVector.end(),
+								childNode) != block->nodeVector.end()) {
+								if (childNode->executionTime >= maxExecuteTime) {
+									maxExecuteTime = childNode->executionTime;
+								}
+								if ((childNode->scheduled) 
+									&& (childNode->alapTime <= earliestAlapTime)){
+									earliestAlapTime = childNode->alapTime;
+								}
 							}
 						}
+						remainingTime = earliestAlapTime;
+						currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
 					}
-					remainingTime = (earliestAlapTime - currentNode->executionTime);
-					currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
+					else {
+						currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
+					}
 					currentNode->scheduled = true;
-				}
-				//Add all current nodes predecessors to queue
-				for (int j = 0; j < currentNode->parentNodes.size(); j++) {
+					//Add all current nodes precessors to queue
+					for (int j = 0; j < currentNode->parentNodes.size(); j++) {
 
-					parentNode = currentNode->parentNodes.at(j);
-					//Check that parentNode is within current block
-					if (std::find(block->nodeVector.begin(), block->nodeVector.end(),
-						parentNode) != block->nodeVector.end()) {
+						parentNode = currentNode->parentNodes.at(j);
+						//Check that parentNode is within current block
+						if (std::find(block->nodeVector.begin(), block->nodeVector.end(),
+							parentNode) != block->nodeVector.end()) {
 
-						if (!parentNode->marked) {
-							predecessors.push_back(parentNode);
-							parentNode->marked = true;
+							if (!parentNode->marked) {
+								predecessors.push(parentNode);
+								parentNode->marked = true;
+							}
 						}
 					}
-				}
-				if (currentNode->scheduled) {
-					predecessors.erase(predecessors.begin() + i);
+					if (!predecessors.empty) {
+						currentNode = predecessors.front;
+						predecessors.pop();
+					}
+					else {
+						currentNode = NULL; //done, no more nodes
+					}
 				}
 			}
 		}
-		//Check that all scheduled Alap times are valid
-		for (int i = 0; i < block->nodeVector.size(); i++) {
-			currentNode = block->nodeVector.at(i);
-			if (currentNode->alapTime > block->timeConstraint || currentNode->alapTime < 0)
-				return false;
-		}
-		block->scheduled = true;
-		return true;
 	}
 	//Scheduling failed, constraint not met
 	block->scheduled = false;
-	return  true;
 }
 /**************************************************************************************************/
 bool Scheduler::asapSchedule(Block * block){
