@@ -1,7 +1,7 @@
 /**************************************************************************************************/
 /*
 * File: main.cpp
-* Author: Andres D. Rebeil
+* Author: Andres D. Rebeil, Nikitha Ramohalli, Kyle Kuan
 * NetID: andres07
 * Date: December 1st, 2015
 *
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
 				datapath.determineCriticalPath();
 
-				datapath.printAll(true);
+				datapath.printAll(false);
 
 				Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
 				output.makeVerilog();
