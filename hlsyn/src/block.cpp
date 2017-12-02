@@ -42,21 +42,25 @@ void Block::resetAll(){
 void Block::findLastNodes() {
 	
 	Node * currentNode;
+	Node * childNode;
 
 	for (unsigned int i = 0; i < this->nodeVector.size(); i++) {
 		
 		currentNode = this->nodeVector.at(i);
+		currentNode->last = false;
 
-		//Check if current Node has children
-		if (!currentNode->childNodes.empty) {
+		//Check if output net is type output
+		if (!currentNode->output->type.compare("output")) {
+			currentNode->last = true;
+		//Else Check if current Node has children, and check if outside current block
+		}else if (!currentNode->childNodes.empty()) {
 			//Check if children 
 			for (int j = 0; j < currentNode->childNodes.size(); j++) {
-				
-				if (this->blockId > currentNode->childNodes.at(j)->parentBlockId) {
+				childNode = currentNode->childNodes.at(j);
+				if (this->blockId < childNode->parentBlockId) {
 					currentNode->last = true;
 					break;
 				}
-
 			}
 		}
 		else { //No children
@@ -65,3 +69,22 @@ void Block::findLastNodes() {
 
 	}
 }
+/**************************************************************************************************/
+void Block::printSchedulingInfo(){
+	cout << "--------------------------------------------------------------------------" << endl;
+	cout << "Block " << this->blockId << " Schedule " << " Constraint: "<< timeConstraint <<endl;
+	cout << "--------------------------------------------------------------------------" << endl;
+	if (this->scheduled) {
+		for (unsigned int i = 0; i < this->nodeVector.size(); i++) {
+			string op = nodeVector.at(i)->op;
+			int diff = 8 - op.length();
+			if (diff > 0) for (int j = 0; j < diff; j++) op += " ";
+			cout << "Node Id: "<<nodeVector.at(i)->id <<"  Op: " << op << " Last: " << nodeVector.at(i)->last <<"  Alap: " << setw(3) << nodeVector.at(i)->alapTime << " Asap: " << nodeVector.at(i)->asapTime << endl;
+		}
+	}
+	else {
+		cout << "Not scheduled." << endl;
+	}
+	cout << endl;
+}
+

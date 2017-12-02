@@ -46,9 +46,12 @@ int main(int argc, char *argv[]) {
 				synthesis.printBlocks();
                 
                 Scheduler scheduler = Scheduler();
-                for(unsigned int i =0; i<synthesis.blockVector.size(); i++){
+                for(unsigned int i = 0; i<synthesis.blockVector.size(); i++){
                     if(synthesis.blockVector.at(i)->type=="component"){
                         scheduler.asapSchedule(synthesis.blockVector.at(i));
+						synthesis.blockVector.at(i)->timeConstraint = stoi(argv[2]);
+						scheduler.determineAlapSchedule(synthesis.blockVector.at(i));
+						synthesis.blockVector.at(i)->printSchedulingInfo();
                     }
                 }
                     
@@ -65,7 +68,7 @@ int main(int argc, char *argv[]) {
 		}
 	}//Invalid number of input arguments entered
 	else {
-		cout << "\nUsage: " << argv[0] << " netlistFile verilogFile" << endl;
+		cout << "\nUsage: " << argv[0] << " cFile latency verilogFile" << endl;
 		return -1;
 	}
 
