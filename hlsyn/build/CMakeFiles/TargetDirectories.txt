@@ -1,0 +1,3 @@
+C:/Users/Andres/Documents/GitHub/PROJECT_ATHENA/hlsyn/build/CMakeFiles/hlsyn.dir
+C:/Users/Andres/Documents/GitHub/PROJECT_ATHENA/hlsyn/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Andres/Documents/GitHub/PROJECT_ATHENA/hlsyn/build/CMakeFiles/ZERO_CHECK.dir
