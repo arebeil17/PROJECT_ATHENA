@@ -167,24 +167,20 @@ bool Scheduler::asapSchedule(Block * block){
                (block->nodeVector.at(i)->visited==false)){
                 if(block->nodeVector.at(i)->op=="MUL"){
                     block->nodeVector.at(i)->nAsapCount++;
-                    newScheduled.push_back(block->nodeVector.at(i));
                 }
                 else if(block->nodeVector.at(i)->op=="DIV"){
                     block->nodeVector.at(i)->nAsapCount++;
-                    newScheduled.push_back(block->nodeVector.at(i));
                 }
                 else if(block->nodeVector.at(i)->op=="MOD"){
                     block->nodeVector.at(i)->nAsapCount++;
-                    newScheduled.push_back(block->nodeVector.at(i));
                 }
                 else {
                     block->nodeVector.at(i)->nMarked=true;
                     block->nodeVector.at(i)->output->nAvailable=true;
-                    newScheduled.push_back(block->nodeVector.at(i));
                 }
 				block->nodeVector.at(i)->nVisited = true;
-				block->nodeVector.at(i)->alapTime = exec_cycle;
 				newScheduled.push_back(block->nodeVector.at(i));
+				block->nodeVector.at(i)->asapTime = exec_cycle;
             }
             else if((block->nodeVector.at(i)->visited==true)&&
                     //node scheduled but not finished yet
@@ -241,7 +237,9 @@ bool Scheduler::asapSchedule(Block * block){
            block->nodeVector.at(i)->visited = block->nodeVector.at(i)->nVisited;
            block->nodeVector.at(i)->asapCount = block->nodeVector.at(i)->nAsapCount;
            block->nodeVector.at(i)->output->available = block->nodeVector.at(i)->output->nAvailable;
-        }
+		   
+		}
+
     }
 return true;
 }
