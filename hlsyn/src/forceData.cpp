@@ -24,9 +24,6 @@ void ForceData::updateFrameWidth(int alapTime, int asapTime){
 //self, predecessor, and successorForces
 void ForceData::updateTotalForces(){
 	
-	vector<float> self;
-	vector<float> predecessor;
-	vector<float> successor;
 	float totalSum = 0.0;
 	
 	//Erase old values before populating with new values
