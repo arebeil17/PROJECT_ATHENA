@@ -18,6 +18,7 @@ ForceData::ForceData(){
 //Compute and Update Frame Width
 void ForceData::updateFrameWidth(int alapTime, int asapTime){
 	frameWidth = alapTime - asapTime;
+	minTotalForce = 10000;
 }
 /**************************************************************************************************/
 //Compute and Update total forces based off current
@@ -36,6 +37,15 @@ void ForceData::updateTotalForces(){
 			if(successorForces.size() > i) totalSum += successorForces.at(i);
 			//Store totalForce for current time slot position of node
 			totalForces.push_back(totalSum); 
+	}
+}
+/**************************************************************************************************/
+void ForceData::updateMinTotalForce(){
+
+	for (unsigned int i = 0; i < totalForces.size(); i++) {
+		if (totalForces.at(i) < minTotalForce) {
+			minTotalForce = totalForces.at(i);
+		}
 	}
 }
 /**************************************************************************************************/

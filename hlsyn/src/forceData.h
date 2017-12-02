@@ -31,6 +31,7 @@ class ForceData {
 		vector<float> predecessorForces;
 		vector<float> successorForces;
 		vector<float> totalForces;
+		float minTotalForce;
 		//Default Constructor
 		ForceData();
 		//Compute and Update Frame Width
@@ -38,6 +39,8 @@ class ForceData {
 		//Compute and Update total force based off current
 		//self, predecessor, and successorForces
 		void updateTotalForces();
+		//Update current minimum total force
+		void updateMinTotalForce();
 		
 };
  

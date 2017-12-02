@@ -34,7 +34,9 @@ class Scheduler {
 		Scheduler();
 
         vector<vector<Node*>> asap;
-		
+		vector<float> aluDistribution;
+		vector<float> multDistribution;
+		vector<float> divModDistribution;
         //Perform all the steps of Force Directed Scheduling on current block's nodes
 		void forceDirectedScheduling(Block* block);
 		bool determineAlapSchedule(Block * block);
