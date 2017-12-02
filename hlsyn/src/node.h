@@ -56,7 +56,7 @@ class Node {
         unsigned int asapCount;
         unsigned int nAsapCount;
 		//FDS Variables
-
+		ForceData forceData;
 		int alapTime;
 		int asapTime;
 		int scheduleTime;
