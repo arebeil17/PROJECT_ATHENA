@@ -12,14 +12,9 @@
 
 //Default Constructor
 ForceData::ForceData(){
-	frameWidth = -1; //Means it wasn't set
+    frameWidth = -1; //Means it wasn't set
 }
-/**************************************************************************************************/
-//Compute and Update Frame Width
-void ForceData::updateFrameWidth(int alapTime, int asapTime){
-	frameWidth = alapTime - asapTime;
-	minTotalForce = 10000;
-}
+
 /**************************************************************************************************/
 //Compute and Update total forces based off current
 //self, predecessor, and successorForces

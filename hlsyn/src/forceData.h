@@ -32,10 +32,10 @@ class ForceData {
 		vector<float> successorForces;
 		vector<float> totalForces;
 		float minTotalForce;
+        // populate from node class
+
 		//Default Constructor
 		ForceData();
-		//Compute and Update Frame Width
-		void updateFrameWidth(int alapTime, int asapTime);
 		//Compute and Update total force based off current
 		//self, predecessor, and successorForces
 		void updateTotalForces();

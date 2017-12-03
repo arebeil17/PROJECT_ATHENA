@@ -234,6 +234,9 @@ bool Synthesis::setBlockConstraint(int timeConstraint){
     for(unsigned int i =0; i<blockVector.size(); i++){
         if(blockVector.at(i)->type=="component"){
             blockVector.at(i)->timeConstraint=timeConstraint;
+            for(unsigned int j =0; j<blockVector.at(i)->nodeVector.size(); j++){
+                blockVector.at(i)->nodeVector.at(j)->timeConstraint = timeConstraint;
+            }
         }
     }
 return true;

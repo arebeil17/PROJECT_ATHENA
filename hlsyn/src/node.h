@@ -55,12 +55,16 @@ class Node {
         // ASAP execution count
         unsigned int asapCount;
         unsigned int nAsapCount;
-		//FDS Variables
-		ForceData forceData;
 		int alapTime;
 		int asapTime;
 		int scheduleTime;
 		int executionTime;
+        int timeConstraint;
+		//FDS Variables
+		ForceData forceData;
+		//Compute and Update Frame Width
+		void updateFrameParams();
+        void updateSelfForces(vector<float> aluDistribution, vector<float> multDistribution, vector<float> divModDistribution);
 		//Functions
 		Node();
 		string toString();

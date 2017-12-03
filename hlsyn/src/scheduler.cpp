@@ -18,8 +18,94 @@ Scheduler::Scheduler()
 
 /**************************************************************************************************/
 void Scheduler::forceDirectedScheduling(Block* block){
-
+    while(fdsNotDone){
+        updateTimeFrame(block);
+        updateDistributions(block);
+        updateSelfForce(block);
+        updatePredecessorForces(block);
+        updateSucessorForces(block);
+        scheduleNode(block);
+        block->printSchedulingInfo();
+    };
 }
+bool Scheduler::updateTimeFrame(Block* block){
+    asapSchedule(block);
+    determineAlapSchedule(block);
+    for(unsigned int i = 0; i< block->nodeVector.size(); i++){
+        block->nodeVector.at(i)->updateFrameParams();        
+        if(block->nodeVector.at(i)->asapTime==block->nodeVector.at(i)->alapTime){
+            block->nodeVector.at(i)->scheduleTime = block->nodeVector.at(i)->asapTime;
+        }
+    }
+    return true;
+}
+bool Scheduler::updateDistributions(Block* block){
+    //clear distribution and update by new probabilities
+    aluDistribution.clear();
+    multDistribution.clear();
+    divModDistribution.clear();
+    aluDistribution.push_back(0.0);
+    multDistribution.push_back(0.0);
+    divModDistribution.push_back(0.0);
+
+    for(int i = 1; i<=block->timeConstraint; i++){
+        float aluTemp = 0.0;
+        float multTemp = 0.0;
+        float divModTemp = 0.0;
+        for(unsigned int j = 0; j< block->nodeVector.size(); j++){
+            if(block->nodeVector.at(j)->op=="MUL"){
+                multTemp+=block->nodeVector.at(j)->forceData.probabilities.at(i);
+            }
+            else if (block->nodeVector.at(j)->op=="DIV"){
+                divModTemp+=block->nodeVector.at(j)->forceData.probabilities.at(i);
+            }
+            else if (block->nodeVector.at(j)->op=="MOD"){
+                divModTemp+=block->nodeVector.at(j)->forceData.probabilities.at(i);
+            }
+            else{
+                aluTemp+=block->nodeVector.at(j)->forceData.probabilities.at(i);
+            }
+        }
+        aluDistribution.push_back(aluTemp);
+        multDistribution.push_back(multTemp);
+        divModDistribution.push_back(divModTemp);
+    }
+//#if 0
+	cout << endl << "All distribution: \n";
+	cout << "--------------------------------------------------------------------------" << endl;
+	cout << "aluDG: ";
+	for (int i = 1; i <= block->timeConstraint; i++) {
+		cout << "	"<< aluDistribution.at(i);
+	}
+    cout<<endl;
+    cout << "--------------------------------------------------------------------------" << endl;
+	cout << "--------------------------------------------------------------------------" << endl;
+	cout << "mulDG: ";
+	for (int i = 1; i <= block->timeConstraint; i++) {
+		cout << "	"<< multDistribution.at(i);
+	}
+    cout<<endl;
+    cout << "--------------------------------------------------------------------------" << endl;
+//#endif
+    return true;
+}
+
+bool Scheduler::updateSelfForce(Block* block){
+    for(unsigned int i = 0; i< block->nodeVector.size(); i++){
+        block->nodeVector.at(i)->updateSelfForces(aluDistribution,multDistribution,divModDistribution);
+//#if 0
+        cout << "Node "<< i << " : ";
+        for (int j = 1; j <= block->timeConstraint; j++) {
+		    cout << "\t"<< block->nodeVector.at(i)->forceData.selfForces.at(j);
+	    }
+        cout<<endl;
+//#endif
+    } 
+   fdsNotDone = false; // temperally stop here 
+    return true;}
+bool Scheduler::updatePredecessorForces(Block* block){return true;}
+bool Scheduler::updateSucessorForces(Block* block){return true;}
+bool Scheduler::scheduleNode(Block* block){return true;}
 /**************************************************************************************************/
 bool Scheduler::determineAlapSchedule(Block * block){
 

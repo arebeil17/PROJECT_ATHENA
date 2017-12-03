@@ -37,10 +37,21 @@ class Scheduler {
 		vector<float> aluDistribution;
 		vector<float> multDistribution;
 		vector<float> divModDistribution;
+        bool    fdsNotDone = true;
+
+
+
         //Perform all the steps of Force Directed Scheduling on current block's nodes
 		void forceDirectedScheduling(Block* block);
 		bool determineAlapSchedule(Block * block);
 		bool asapSchedule(Block * block);
+
+        bool updateTimeFrame(Block* block);
+        bool updateDistributions(Block* block);
+        bool updateSelfForce(Block* block);
+        bool updatePredecessorForces(Block* block);
+        bool updateSucessorForces(Block* block);
+        bool scheduleNode(Block* block);
 };
  
 #endif //SCHEDULER_H

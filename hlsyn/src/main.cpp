@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     /* Check for the correct number of command line arguments. If incorrect
     *  provide a simple usage message to assist user
     */
-    if(argc == 3){
+    if(argc == 4){
        
 		Input input;
 
@@ -36,21 +36,22 @@ int main(int argc, char *argv[]) {
 
 				datapath.determineCriticalPath();
 
-				//datapath.printAll(false);
-				datapath.printAll(true);
+				datapath.printAll(false);
+				//datapath.printAll(true);
                 
                 Synthesis synthesis(input.netlistLines, &(datapath.nodeListVector));
                 synthesis.makeBlocks();
 				synthesis.setAllBlockPointers();
-				synthesis.setBlockConstraint(10);
+				synthesis.setBlockConstraint(stoi(argv[2]));
 				//synthesis.printBlocks();
                 
                 Scheduler scheduler = Scheduler();
                 for(unsigned int i = 0; i<synthesis.blockVector.size(); i++){
                     if(synthesis.blockVector.at(i)->type=="component"){
-                        scheduler.asapSchedule(synthesis.blockVector.at(i));
+                        //scheduler.asapSchedule(synthesis.blockVector.at(i));
 						synthesis.blockVector.at(i)->timeConstraint = stoi(argv[2]);
-						scheduler.determineAlapSchedule(synthesis.blockVector.at(i));
+						//scheduler.determineAlapSchedule(synthesis.blockVector.at(i));
+						scheduler.forceDirectedScheduling(synthesis.blockVector.at(i));
 						synthesis.blockVector.at(i)->printSchedulingInfo();
                     }
                 }

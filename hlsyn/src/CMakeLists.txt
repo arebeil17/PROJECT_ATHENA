@@ -1,7 +1,7 @@
 # Author: Your Name
 # NetID: Your NetID
-# Date: 
-# Assignment Number: 
+# Date:
+# Assignment Number:
 
 # This file is an exception to the Code of Academic Integrity, and may be reused without
 # the need to request permission for future assignments **as long as all edits are made by
@@ -21,13 +21,13 @@ if(MSVC)
 else()
     # adds debug information for all other OSs
     add_definitions(-Wall -g -fno-inline-functions -std=gnu++11)
-    # remove debug, highest optimization 
+    # remove debug, highest optimization
     #add_definitions(-Wall -O3 -std=gnu++11)
 endif()
 
 # The following file GLOB command will search for all files within the current directory
 # that match the specified expressions (*.cpp and *.h), and assign the resulting files
-# to the variable SRCS. Thus, SRCS is a list a all CPP source and header files in the 
+# to the variable SRCS. Thus, SRCS is a list a all CPP source and header files in the
 # current directory.
 
 file( GLOB SRCS *.cpp *.h )

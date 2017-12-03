@@ -24,10 +24,10 @@ Node::Node(){
 	criticalNode = NULL;
 	depth = 0;
 	parentBlockId = 0;
-	//New Variables for FDS
 	alapTime = 0;
 	asapTime = 0;
-	scheduleTime = 0;
+	timeConstraint = -1;
+    scheduleTime = 0;
 	executionTime = 0;
 	
     asapCount = 1;
@@ -35,6 +35,72 @@ Node::Node(){
 	nVisited = false;
 	nMarked = false;
 }
+
+
+/**************************************************************************************************/
+//Compute and Update Frame Width
+void Node::updateFrameParams(){
+	forceData.frameWidth = 1+ alapTime - asapTime;
+	forceData.probabilities.push_back(0.0); //dummy push, start from vector 1
+    for(int i =1; i<=timeConstraint; i++){
+        if(i <= alapTime && i>= asapTime){
+            forceData.probabilities.push_back(1.0/forceData.frameWidth);
+        }
+        else{
+            forceData.probabilities.push_back(0.0);
+        }
+    }    
+    forceData.minTotalForce = 10000;
+}
+void Node::updateSelfForces(vector<float> aluDistribution, vector<float> multDistribution, vector<float> divModDistribution){
+    //clear distribution and update by new probabilities
+    forceData.selfForces.clear();
+    forceData.selfForces.push_back(0.0);
+    for(int i = 1; i<=timeConstraint; i++){
+        float tempForce = 0.0;
+        for(int j =asapTime; j<=alapTime; j++){
+            if(op=="MUL"){
+                if(i==j){
+                    tempForce += multDistribution.at(j)*(1.0-forceData.probabilities.at(j));
+                }
+                else {
+                    tempForce += multDistribution.at(j)*(0.0-forceData.probabilities.at(j));
+                }
+            }
+            else if(op=="DIV"){
+                if(i==j){
+                    tempForce += divModDistribution.at(j)*(1.0-forceData.probabilities.at(j));
+                }
+                else {
+                    tempForce += divModDistribution.at(j)*(0.0-forceData.probabilities.at(j));
+                }
+            }
+            else if(op=="MOD"){
+                if(i==j){
+                    tempForce += divModDistribution.at(j)*(1.0-forceData.probabilities.at(j));
+                }
+                else {
+                    tempForce += divModDistribution.at(j)*(0.0-forceData.probabilities.at(j));
+                }
+            }
+            else{
+                if(i==j){
+                    tempForce += aluDistribution.at(j)*(1.0-forceData.probabilities.at(j));
+                }
+                else {
+                    tempForce += aluDistribution.at(j)*(0.0-forceData.probabilities.at(j));
+                }
+            }
+        }
+        if(i>=asapTime&&i<=alapTime){   //within timeframe
+            forceData.selfForces.push_back(tempForce);
+        }
+        else{           // outside timeframe
+            forceData.selfForces.push_back(0.0); 
+        }
+    }    
+}
+
 /**************************************************************************************************/
 //Returns a string representation of this Node
 string Node::toString() {
