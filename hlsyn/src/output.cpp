@@ -10,13 +10,14 @@
 #include "output.h"
 /**************************************************************************************************/
 //Default Constructor
-Output::Output()
-{
+Output::Output(){
+	verilogText = "";
     // nothing
 }
 // Custom Constructor
 Output::Output(char *outputFile, vector<Net>*  netListVector, vector<Node>* nodeListVector){
-        this->outputFile    = outputFile;
+		this->verilogText = "";
+		this->outputFile    = outputFile;
         this->netListVector = netListVector;
         this->nodeListVector= nodeListVector;
 }
@@ -67,11 +68,14 @@ bool Output::makeHead(){
             verilogText += netListVector->at(i).name+", "; 
         }
     }
+	verilogText += "Clk, Rst, Start, Done);\n";
+	/*
     if(weHaveRegister){
-    verilogText += "clk, rst, ";
+    verilogText += "Clk, Rst, Start, Done ";
     }
     // fix ending
     verilogText.replace(verilogText.end()-2,verilogText.end(),");\n");
+	*/
 return true;
 }
 /**************************************************************************************************/
@@ -123,13 +127,13 @@ bool Output::makeNets(){
             verilogText += "input \t"; 
         }
         else if(netListVector->at(i).type=="output"){
-            verilogText += "output \t"; 
+            verilogText += "output \treg";  //Updated for assignment 3, added reg
         }
         else if(netListVector->at(i).type=="wire"){
             verilogText += "wire \t"; 
         }
         else if(netListVector->at(i).type=="register"){
-            verilogText += "wire \t"; 
+            verilogText += "reg \t";	//Updated for assignment 3, was wire
         }
         if(netListVector->at(i).signedBit==true){
             verilogText += "signed\t"; 
@@ -139,7 +143,7 @@ bool Output::makeNets(){
         verilogText += "\n"; 
     }
     if(weHaveRegister){
-        verilogText += "\tinput \tclk, rst;\n";
+        verilogText += "\tinput \tClk, Rst, Start;\n";
     }
 return true;
 }
@@ -177,7 +181,7 @@ bool Output::makeNodes(){
             verilogText += "));\n";                     
         }
         else if(nodeListVector->at(i).op=="REG"){
-            verilogText += "clk, rst, "+getNetMatched(i,"inputs",0)+", "+getNetMatched(i,"output",0)+");\n";
+            verilogText += "Clk, Rst, "+getNetMatched(i,"inputs",0)+", "+getNetMatched(i,"output",0)+");\n";
                 
         }
         else if(nodeListVector->at(i).op=="WIRE"){
@@ -210,13 +214,84 @@ bool Output::makeVerilog(){
 return true;
 }
 /**************************************************************************************************/
-bool Output::generateHLSM(){
+bool Output::generateHLSM(vector<State>* states){
 	//preMakeProcess();
 	makeHead();
 	makeNets();
 	//makeNodes();
+	
+	makeStateRegParameters(states);
+	if (!makeStateMachine(states)) return false;
 	makeEnd();
 	dumpVerilogText();
+	return true;
+}
+/**************************************************************************************************/
+bool Output::makeStateRegParameters(vector<State>* states){
+	
+	int regSize = 0;
+	int totalStates = states->size() + 2;
+	//Determine minimum State Register size in bits
+	regSize = (int) ceil( log2(totalStates) );
 
+	verilogText += "\n\toutput \treg Done;\n";
+	verilogText += "\treg [" + to_string(regSize - 1) + ": 0] State, NextState;\n\n";
+
+	if (totalStates > 2) {
+		verilogText += "\tlocalparam [" + to_string(regSize - 1) + ":0] Wait = 0,\n";
+		
+		for (unsigned int i = 0; i < states->size(); i++)
+			verilogText += "\t\t\t\t\t " + states->at(i).name + " = " + to_string(states->at(i).cycle) + ",\n";
+		
+		verilogText += "\t\t\t\t\t Final = " + to_string(totalStates - 1) + ";\n";
+		
+		return true;
+	}
 	return false;
 }
+/**************************************************************************************************/
+bool Output::makeStateMachine(vector<State>* states){
+
+	if (states->size() > 0) {
+		this->verilogText += "\talways @(State, Start) begin\n"; //Start Always block
+		this->verilogText += "\t\tcase(State)\n";
+		this->verilogText += "\t\t\tWait:begin\n"; //Initial Wait state
+		this->verilogText += "\t\t\t\tDone <= 0;\n";
+		this->verilogText += "\t\t\t\tif(Start)\n";
+		if(states->size() > 0)
+			this->verilogText += "\t\t\t\t\tNextState <= " + states->at(0).name + ";\n";
+		else
+			this->verilogText += "\t\t\t\t\tNextState <= Final;\n";
+		this->verilogText += "\t\t\t\telse\n";
+		this->verilogText += "\t\t\t\t\tNextState <= Wait;\n";
+		this->verilogText += "\t\t\tend\n";
+
+		//MAGIC HAPPENS HERE: Add all states generated to verilog output
+		for (unsigned int i = 0; i < states->size(); i++) {
+			this->verilogText += states->at(i).verilogString; //Generate State i + 1
+		}
+		//Final State
+		this->verilogText += "\t\t\tFinal:begin\n"; //Final Case
+		this->verilogText += "\t\t\t\tDone <= 1;\n";
+		this->verilogText += "\t\t\t\tNextState <= Wait;\n";
+		this->verilogText += "\t\t\tend\n";
+
+		this->verilogText += "\t\t\tdefault:begin\n"; //Default Case
+		this->verilogText += "\t\t\t\tNextState <= Wait;\n";
+		this->verilogText += "\t\t\tend\n";
+		this->verilogText += "\t\tendcase\n";
+		this->verilogText += "\tend\n"; //End Always block
+
+		this->verilogText += "\talways @(posedge Clk) begin\n";
+		this->verilogText += "\t\tif(Rst)\n";
+		this->verilogText += "\t\t\tState <= Wait;\n";
+		this->verilogText += "\t\telse\n";
+		this->verilogText += "\t\t\tState <=  NextState;\n";
+		this->verilogText += "\tend\n";
+
+		return true;
+	}
+	
+	return false;
+}
+

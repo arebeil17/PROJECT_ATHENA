@@ -17,6 +17,7 @@
 #include <string>
 #include <math.h>
 #include <cstdio>
+#include "node.h"
 
 /**************************************************************************************************/
 using namespace std;
@@ -24,7 +25,16 @@ using namespace std;
 class State { 
 	
 	public:
+		string name;
+		string nextStateName;
+		int cycle;
+		vector<Node*> scheduledNodes;
+		string verilogString;
+
 		State();
+		State(string name, string nextStateName, int cycle);
+
+		bool generateVerilogString();
 		
 };
  

@@ -19,6 +19,7 @@
 #include <cstdio>
 #include "net.h"
 #include "datapath.h"
+#include "state.h"
 
 /**************************************************************************************************/
 using namespace std;
@@ -48,7 +49,11 @@ class Output {
         bool makeEnd();
         bool makeVerilog();
         string getNetMatched(unsigned int i, string io, int numOfNets);
-		bool generateHLSM();
+		//For State Machine Generation
+		bool generateHLSM(vector<State>* states);
+		bool makeStateRegParameters(vector<State>* states);
+		bool makeStateMachine(vector<State>* states);
+		
 };
  
 #endif //OUTPUT_H

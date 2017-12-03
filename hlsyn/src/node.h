@@ -30,6 +30,7 @@ class Node {
 		// Variables
 		int id;
 		string op;
+		string opSymbol;
 		string moduleName;
         // Node operation in text format
 		string statement;
