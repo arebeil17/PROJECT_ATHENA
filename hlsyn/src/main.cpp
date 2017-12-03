@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 				datapath.printAll(false);
 				//datapath.printAll(true);
                 
-                Synthesis synthesis(input.netlistLines, &(datapath.nodeListVector));
+                Synthesis synthesis(stoi(argv[2]), input.netlistLines, &(datapath.nodeListVector));
                 synthesis.makeBlocks();
 				synthesis.setAllBlockPointers();
 				synthesis.setBlockConstraint(stoi(argv[2]));
@@ -55,9 +55,13 @@ int main(int argc, char *argv[]) {
 						synthesis.blockVector.at(i)->printSchedulingInfo();
                     }
                 }
-                    
-                //Output output(argv[2], &(datapath.netListVector), &(datapath.nodeListVector));
-				//output.makeVerilog();
+                //Output HLSM verilog file
+				synthesis.generateStates();
+                Output output(argv[3], &(datapath.netListVector), &(datapath.nodeListVector));
+				if (output.generateHLSM(&synthesis.states))
+					cout << "\nState Machine Successfully Generated." << endl;
+				else
+					cout << "\nError. State Machine not generated." << endl;
 			}
 			else {
 				cout << "\nError found in netlist file at line " << to_string(datapath.currentLine + 1)<<". Aborted netlist conversion." << endl;

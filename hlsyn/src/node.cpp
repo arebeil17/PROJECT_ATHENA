@@ -13,6 +13,7 @@
 //Default Constructor
 Node::Node(){
 	id = 0;
+	opSymbol = "";
 	pathDelay = 0.0;
 	delay = 0.0;
 	width = 0;
@@ -145,6 +146,7 @@ float Node::getDelay(string op, int bitwidth)
 		}
 	}
 	if (!op.compare("ADD")) {
+		opSymbol = "+";
 		switch (bitwidth) {
 			case 1:  return ADD_1B;
 			case 2:  return ADD_2B;
@@ -155,6 +157,7 @@ float Node::getDelay(string op, int bitwidth)
 		}
 	}
 	if (!op.compare("SUB")) {
+		opSymbol = "-";
 		switch (bitwidth) {
 			case 1:  return SUB_1B;
 			case 2:  return SUB_2B;
@@ -165,6 +168,7 @@ float Node::getDelay(string op, int bitwidth)
 		}
 	}
 	if (!op.compare("MUL")) {
+		opSymbol = "*";
 		executionTime = MULT_CYCLES;
 		switch (bitwidth) {
 			case 1:  return MUL_1B;
@@ -179,6 +183,11 @@ float Node::getDelay(string op, int bitwidth)
 	if (!op.compare("COMP_LT") || 
 		!op.compare("COMP_EQ") || 
 		!op.compare("COMP_GT")) {
+	
+		if(!op.compare("COMP_LT")) opSymbol = "<";
+		else if(!op.compare("COMP_EQ")) opSymbol = "==";
+		else opSymbol = ">";
+
 		switch (bitwidth) {
 			case 1:  return COMP_1B;
 			case 2:  return COMP_2B;
@@ -189,6 +198,7 @@ float Node::getDelay(string op, int bitwidth)
 		}
 	}
 	if (!op.compare("MUX2x1")) {
+		opSymbol = "?";
 		switch (bitwidth) {
 			case 1:  return MUX_1B;
 			case 2:  return MUX_2B;
@@ -200,6 +210,7 @@ float Node::getDelay(string op, int bitwidth)
 	}
 
 	if (!op.compare("SHR")) {
+		opSymbol = ">>";
 		switch (bitwidth) {
 			case 1:  return SHR_1B;
 			case 2:  return SHR_2B;
@@ -211,6 +222,7 @@ float Node::getDelay(string op, int bitwidth)
 	}
 
 	if (!op.compare("SHL")) {
+		opSymbol = "<<";
 		switch (bitwidth) {
 			case 1:  return SHL_1B;
 			case 2:  return SHL_2B;
@@ -222,6 +234,7 @@ float Node::getDelay(string op, int bitwidth)
 	}
 
 	if (!op.compare("DIV")) {
+		opSymbol = "/";
 		executionTime = DIV_CYCLES;
 		switch (bitwidth) {
 			case 1:  return DIV_1B;
@@ -234,6 +247,7 @@ float Node::getDelay(string op, int bitwidth)
 	}
 
 	if (!op.compare("MOD")) {
+		opSymbol = "%";
 		executionTime = MOD_CYCLES;
 		switch (bitwidth) {
 			case 1:  return MOD_1B;
@@ -246,6 +260,7 @@ float Node::getDelay(string op, int bitwidth)
 	}
 
 	if (!op.compare("INC")) {
+		opSymbol = "+";
 		switch (bitwidth) {
 			case 1:  return INC_1B;
 			case 2:  return INC_2B;
@@ -257,6 +272,7 @@ float Node::getDelay(string op, int bitwidth)
 	}
 
 	if (!op.compare("DEC")) {
+		opSymbol = "-";
 		switch (bitwidth) {
 			case 1:  return DEC_1B;
 			case 2:  return DEC_2B;

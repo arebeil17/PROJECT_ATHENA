@@ -24,6 +24,7 @@
 #include "node.h"
 #include "net.h"
 #include "block.h"
+#include "state.h"
 
 /**************************************************************************************************/
 using namespace std;
@@ -31,19 +32,21 @@ using namespace std;
 class Synthesis { 
 	
 	public:
+		int timeConstraint;
+		Block nextLevelBlock[100];
+		vector<Block*>   blockVector;
+		vector<string>  netlistLines;
+		vector<Node>*   nodeListVector;
+		unsigned int    currentLine;
+		unsigned int    blockId;
+		vector<State> states;
+
 
 		//Default Constructor
 		Synthesis();
         //Custom Constructor 
-        Synthesis(vector<string> netlistLines, vector<Node>* nodeListVector);
+        Synthesis(int timeConstraint, vector<string> netlistLines, vector<Node>* nodeListVector);
         
-        Block nextLevelBlock[100];        
-		vector<Block*>   blockVector;
-        vector<string>  netlistLines;
-        vector<Node>*   nodeListVector; 
-        unsigned int    currentLine;
-        unsigned int    blockId;
-
         bool parseBlocksNodes(Block* parentBlock, unsigned int currentLevel);	
         bool parseBlocks_prefix();
         bool makeBlocks();
@@ -53,6 +56,8 @@ class Synthesis {
 		void setAllBlockPointers();
 
 		void printBlocks();
+
+		void generateStates();
 };
  
 #endif //SYNTHESIS_H

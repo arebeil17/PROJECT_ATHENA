@@ -13,11 +13,13 @@
 //Default Constructor
 Synthesis::Synthesis()
 {
+	timeConstraint = 0;
     currentLine = 0;
     blockId = 0;
 }
-Synthesis::Synthesis(vector<string> netlistLines, vector<Node>* nodeListVector){
-    this->netlistLines = netlistLines;
+Synthesis::Synthesis(int timeConstraint, vector<string> netlistLines, vector<Node>* nodeListVector){
+	this->timeConstraint = timeConstraint;
+	this->netlistLines = netlistLines;
     this->nodeListVector = nodeListVector;
     currentLine = 0;
     blockId = 0;
@@ -229,7 +231,7 @@ void Synthesis::printBlocks(){
 }
 /**************************************************************************************************/
 bool Synthesis::setBlockConstraint(int timeConstraint){
- 
+	
     //set Block contraint function placeholer
     for(unsigned int i =0; i<blockVector.size(); i++){
         if(blockVector.at(i)->type=="component"){
@@ -242,3 +244,28 @@ bool Synthesis::setBlockConstraint(int timeConstraint){
 return true;
 }    
 /**************************************************************************************************/
+//Creates states based off the node schedule times
+//Also generates their verilog string and adds all of them to states vector
+void Synthesis::generateStates(){
+
+	for (unsigned int i = 0; i < timeConstraint; i++) {
+		string stateName = "State_" + to_string(i + 1);
+		string nextStateName = "Final";
+		if(i < (timeConstraint - 1 )) nextStateName = "State_" + to_string(i + 2);
+		
+		State currentState = State(stateName, nextStateName, (i + 1));
+
+		for (unsigned int j = 0; j < nodeListVector->size(); j++) {
+			//Check if nodes scheduled time matches current state cycle time
+			if (nodeListVector->at(j).scheduleTime == (i + 1)) {
+				currentState.scheduledNodes.push_back(&nodeListVector->at(j));
+			}//Else if not scheduled assume alap time
+			else if (nodeListVector->at(j).alapTime == (i + 1)) {
+				currentState.scheduledNodes.push_back(&nodeListVector->at(j));
+			}
+		}
+		currentState.generateVerilogString();
+		states.push_back(currentState);
+	}
+
+}
