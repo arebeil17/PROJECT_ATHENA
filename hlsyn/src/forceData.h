@@ -32,6 +32,7 @@ class ForceData {
 		vector<float> successorForces;
 		vector<float> totalForces;
 		float minTotalForce;
+		int minTotalForceCycle;
         // populate from node class
 
 		//Default Constructor
@@ -40,7 +41,7 @@ class ForceData {
 		//self, predecessor, and successorForces
 		void updateTotalForces();
 		//Update current minimum total force
-		void updateMinTotalForce();
+		void updateMinTotalForce(int alapTime, int asapTime);
 		
 };
  

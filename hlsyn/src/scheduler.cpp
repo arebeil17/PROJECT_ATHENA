@@ -111,6 +111,7 @@ bool Scheduler::updateSucessorForces(Block* block){
 	return true;
 }
 /**************************************************************************************************/
+//Determines which node should be scheduled based on the minimum total force
 bool Scheduler::scheduleNode(Block* block){
 	Node * currentNode;
 	Node * minimumForceNode;
@@ -122,12 +123,13 @@ bool Scheduler::scheduleNode(Block* block){
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
 			currentNode->forceData.updateTotalForces();
-			currentNode->forceData.updateMinTotalForce();
+			currentNode->forceData.updateMinTotalForce(currentNode->alapTime, currentNode->alapTime);
 		}
 		minimumForceNode = block->nodeVector.at(0);
 		//2. Find node with the the smallest total force
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
+			//Check that current node isn't scheduled and that it has a smaller total force
 			if (currentNode->scheduleTime != 0 &&
 				currentNode->forceData.minTotalForce < minimumForceNode->forceData.minTotalForce) {
 				minimumForceNode = currentNode;
@@ -135,7 +137,8 @@ bool Scheduler::scheduleNode(Block* block){
 		}
 
 		//Taget schedule time, time we want to schdule node without conflicts
-		int targetTime = minimumForceNode->scheduleTime;
+		//Initially set as time with minimum force determined by FDS
+		int targetTime = minimumForceNode->forceData.minTotalForceCycle;
 
 		//3. Schedule the unscheduled node with minimum force
 		//First Check for scheduling conficts with parents and children
@@ -204,6 +207,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 		vector<Node*> predecessors;
 		int remainingTime = block->timeConstraint;
 		
+		/*
 		//For testing force certain nodes to be scheduled already w/asap time
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
@@ -213,7 +217,7 @@ bool Scheduler::determineAlapSchedule(Block * block){
 				currentNode->scheduleTime = 2;
 			}
 		}
-		
+		*/
 		//Check if all nodes that have been FDS scheduled already
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
