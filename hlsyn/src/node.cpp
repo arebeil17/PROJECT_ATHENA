@@ -106,7 +106,10 @@ void Node::updateSelfForces(vector<float> aluDistribution, vector<float> multDis
             forceData.selfForces.push_back(tempForce);
         }
         else{           // outside timeframe
-            forceData.selfForces.push_back(0.0); 
+            if(op=="MUL") forceData.selfForces.push_back(multDistribution.at(i)); 
+            else if(op=="DIV") forceData.selfForces.push_back(divModDistribution.at(i));
+            else if(op=="MOD") forceData.selfForces.push_back(divModDistribution.at(i));
+            else forceData.selfForces.push_back(aluDistribution.at(i));
         }
     }    
 }
