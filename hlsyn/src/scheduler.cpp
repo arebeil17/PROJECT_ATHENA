@@ -103,8 +103,7 @@ bool Scheduler::updateSelfForce(Block* block){
    fdsNotDone = false; // temperally stop here 
  return true;
 }
-
-
+/**************************************************************************************************/
 vector<Node*> Scheduler::generateSuccessorQueue(Block* block, unsigned int nodeIndex){
 	Node* currentNode = block->nodeVector.at(nodeIndex);
     //Node* childNode;
@@ -128,7 +127,7 @@ vector<Node*> Scheduler::generateSuccessorQueue(Block* block, unsigned int nodeI
     }
 return successorQueue;
 }
-
+/**************************************************************************************************/
 bool Scheduler::updateSucessorForces(Block* block){
     for(unsigned int i = 0; i< block->nodeVector.size(); i++){
         Node * currentNode = block->nodeVector.at(i);
@@ -203,7 +202,7 @@ bool Scheduler::updateSucessorForces(Block* block){
     }
     return true;
 }
-
+/**************************************************************************************************/
 vector<Node*> Scheduler::generatePredecessorQueue(Block* block, unsigned int nodeIndex){
 	Node* currentNode = block->nodeVector.at(nodeIndex);
     //Node* childNode;
@@ -227,7 +226,7 @@ vector<Node*> Scheduler::generatePredecessorQueue(Block* block, unsigned int nod
     }
 return predecessorQueue;
 }
-
+/**************************************************************************************************/
 bool Scheduler::updatePredecessorForces(Block* block){
      for(unsigned int i = 0; i< block->nodeVector.size(); i++){
         Node * currentNode = block->nodeVector.at(i);
@@ -347,9 +346,9 @@ bool Scheduler::scheduleNode(Block* block){
 			if (parentNode->scheduleTime != 0) {
 				parents.push_back(parentNode);
 				int endTime = parentNode->scheduleTime - (parentNode->executionTime - 1);
-				if (minimumForceNode->scheduleTime <= endTime) {
+				if (targetTime <= endTime) {
 					parentConflict = true;
-					currentDiff = abs(minimumForceNode->scheduleTime - endTime);
+					currentDiff = abs(targetTime - endTime);
 					if (upperDiff < currentDiff)
 						upperDiff = currentDiff;
 				}
@@ -361,9 +360,9 @@ bool Scheduler::scheduleNode(Block* block){
 			if (childNode->scheduleTime != 0) {
 				children.push_back(childNode);
 				int startTime = childNode->scheduleTime;
-				if (minimumForceNode->scheduleTime >= startTime) {
+				if (targetTime >= startTime) {
 					childConflict = true;
-					currentDiff = abs(minimumForceNode->scheduleTime - startTime);
+					currentDiff = abs(targetTime - startTime);
 					if (lowerDiff < currentDiff)
 						lowerDiff = currentDiff;
 				}
@@ -385,7 +384,7 @@ bool Scheduler::scheduleNode(Block* block){
         //check if all nodes are scheduled
         bool allDone=true;
         for(unsigned int i = 0 ; i<block->nodeVector.size();i++){
-            allDone&=(block->nodeVector.at(i)->scheduleTime!=0);
+            allDone &= (block->nodeVector.at(i)->scheduleTime != 0);
         }
         fdsNotDone=!allDone;
         
