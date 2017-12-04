@@ -42,7 +42,7 @@ class Scheduler {
 
 
         //Perform all the steps of Force Directed Scheduling on current block's nodes
-		void forceDirectedScheduling(Block* block);
+		bool forceDirectedScheduling(Block* block);
 		bool determineAlapSchedule(Block * block);
 		bool asapSchedule(Block * block);
 

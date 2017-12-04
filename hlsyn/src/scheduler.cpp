@@ -14,20 +14,31 @@ Scheduler::Scheduler(){
 	
 }
 /**************************************************************************************************/
-void Scheduler::forceDirectedScheduling(Block* block){
+bool Scheduler::forceDirectedScheduling(Block* block){
     while(fdsNotDone){
-        updateTimeFrame(block);
-        updateDistributions(block);
-        updateSelfForce(block);
-        updatePredecessorForces(block);
-        updateSucessorForces(block);
-        scheduleNode(block);
+		if (updateTimeFrame(block)) {
+			updateDistributions(block);
+			updateSelfForce(block);
+			updatePredecessorForces(block);
+			updateSucessorForces(block);
+			scheduleNode(block);
+		}
+		else {
+			fdsNotDone = false;
+			cout << "Impossible Time Constaint. Scheduling Aborted." << endl;
+			return false;
+		}
     };
+	return true;
 }
 /**************************************************************************************************/
 bool Scheduler::updateTimeFrame(Block* block){
-    asapSchedule(block);
+	
+	if (!asapSchedule(block)) {
+		return false;
+	}
     determineAlapSchedule(block);
+
     for(unsigned int i = 0; i< block->nodeVector.size(); i++){
         block->nodeVector.at(i)->updateFrameParams();        
         if(block->nodeVector.at(i)->asapTime==block->nodeVector.at(i)->alapTime){
@@ -554,7 +565,6 @@ bool Scheduler::asapSchedule(Block * block){
         for(unsigned int i = 0; i< block->nodeVector.size();i++){
             bool nodeAvailable = true;
             // if the node has been schedule, wait the schedule time
-
             nodeAvailable &= exec_cycle >= block->nodeVector.at(i)->scheduleTime;
             for(unsigned int j = 0; j< block->nodeVector.at(i)->inputs.size();j++){
                 if(block->nodeVector.at(i)->inputs.at(j)){
@@ -568,7 +578,7 @@ bool Scheduler::asapSchedule(Block * block){
 				block->nodeVector.at(i)->nVisited = true;
 				newScheduled.push_back(block->nodeVector.at(i));
 				block->nodeVector.at(i)->asapTime = exec_cycle;
-                
+
                 if(block->nodeVector.at(i)->op=="MUL"){
                     block->nodeVector.at(i)->nAsapCount++;
                 }
@@ -617,6 +627,8 @@ bool Scheduler::asapSchedule(Block * block){
                 }
             }
         }
+		//Check for exceeded time constaint
+		if (block->timeConstraint < exec_cycle) return false;
         //increment cycle
         exec_cycle++;
         //check phase
@@ -641,6 +653,6 @@ bool Scheduler::asapSchedule(Block * block){
 		}
 
     }
-return true;
+	return true;
 }
 

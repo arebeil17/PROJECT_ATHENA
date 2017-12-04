@@ -51,7 +51,9 @@ int main(int argc, char *argv[]) {
                         //scheduler.asapSchedule(synthesis.blockVector.at(i));
 						synthesis.blockVector.at(i)->timeConstraint = stoi(argv[2]);
 						//scheduler.determineAlapSchedule(synthesis.blockVector.at(i));
-						scheduler.forceDirectedScheduling(synthesis.blockVector.at(i));
+						if (!scheduler.forceDirectedScheduling(synthesis.blockVector.at(i))) {
+							return -1;
+						}
 						synthesis.blockVector.at(i)->printSchedulingInfo();
                     }
                 }
