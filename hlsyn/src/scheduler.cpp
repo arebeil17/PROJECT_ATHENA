@@ -9,13 +9,10 @@
 /**************************************************************************************************/
 #include "scheduler.h"
 /**************************************************************************************************/
-
 //Default Constructor
-Scheduler::Scheduler()
-{
+Scheduler::Scheduler(){
 	
 }
-
 /**************************************************************************************************/
 void Scheduler::forceDirectedScheduling(Block* block){
     while(fdsNotDone){
@@ -27,6 +24,7 @@ void Scheduler::forceDirectedScheduling(Block* block){
         scheduleNode(block);
     };
 }
+/**************************************************************************************************/
 bool Scheduler::updateTimeFrame(Block* block){
     asapSchedule(block);
     determineAlapSchedule(block);
@@ -38,6 +36,7 @@ bool Scheduler::updateTimeFrame(Block* block){
     }
     return true;
 }
+/**************************************************************************************************/
 bool Scheduler::updateDistributions(Block* block){
     //clear distribution and update by new probabilities
     aluDistribution.clear();
@@ -88,7 +87,7 @@ bool Scheduler::updateDistributions(Block* block){
 //#endif
     return true;
 }
-
+/**************************************************************************************************/
 bool Scheduler::updateSelfForce(Block* block){
     for(unsigned int i = 0; i< block->nodeVector.size(); i++){
         block->nodeVector.at(i)->updateSelfForces(aluDistribution,multDistribution,divModDistribution);
@@ -303,7 +302,98 @@ bool Scheduler::updatePredecessorForces(Block* block){
     }
     return true;
 }   
-bool Scheduler::scheduleNode(Block* block){return true;}
+/**************************************************************************************************/
+//Determines which node should be scheduled based on the minimum total force
+bool Scheduler::scheduleNode(Block* block){
+	
+	Node * currentNode;
+	Node * minimumForceNode;
+	bool parentConflict = false;
+	bool childConflict = false;
+
+	if (!block->nodeVector.empty()) {
+		//1. Determine the minimum total force for each node
+		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
+			currentNode = block->nodeVector.at(i);
+			currentNode->forceData.updateTotalForces();
+			currentNode->forceData.updateMinTotalForce(currentNode->alapTime, currentNode->alapTime);
+		}
+		minimumForceNode = block->nodeVector.at(0);
+		//2. Find node with the the smallest total force
+		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
+			currentNode = block->nodeVector.at(i);
+			//Check that current node isn't scheduled and that it has the smallest total force
+			if (currentNode->scheduleTime == 0 &&
+				currentNode->forceData.minTotalForce < minimumForceNode->forceData.minTotalForce) {
+				minimumForceNode = currentNode;
+			}
+		}
+
+		//Taget schedule time, time we want to schdule node without conflicts
+		//Initially set as time with minimum force determined by FDS
+		int targetTime = minimumForceNode->forceData.minTotalForceCycle;
+
+		//3. Schedule the unscheduled node with minimum force
+		//First Check for scheduling conficts with parents and children
+		vector<Node*> parents;  //scheduled parents
+		vector<Node*> children; //scheduled children
+		Node* parentNode;
+		Node* childNode;
+		int upperDiff = 0, lowerDiff = 0, currentDiff = 0;
+		
+		//Determine scheduled Parents with conflicts
+		for (unsigned int i = 0; i < minimumForceNode->parentNodes.size(); i++) {
+			parentNode = minimumForceNode->parentNodes.at(i);
+			if (parentNode->scheduleTime != 0) {
+				parents.push_back(parentNode);
+				int endTime = parentNode->scheduleTime - (parentNode->executionTime - 1);
+				if (minimumForceNode->scheduleTime <= endTime) {
+					parentConflict = true;
+					currentDiff = abs(minimumForceNode->scheduleTime - endTime);
+					if (upperDiff < currentDiff)
+						upperDiff = currentDiff;
+				}
+			}
+		}
+		//Determine scheduled Children with conflicts
+		for (unsigned int i = 0; i < minimumForceNode->childNodes.size(); i++) {
+			childNode = minimumForceNode->childNodes.at(i);
+			if (childNode->scheduleTime != 0) {
+				children.push_back(childNode);
+				int startTime = childNode->scheduleTime;
+				if (minimumForceNode->scheduleTime >= startTime) {
+					childConflict = true;
+					currentDiff = abs(minimumForceNode->scheduleTime - startTime);
+					if (lowerDiff < currentDiff)
+						lowerDiff = currentDiff;
+				}
+			}
+		}
+		//Check for conflicts, attempt to adjust targetTime
+		if (parentConflict || childConflict) {
+			if (parentConflict)
+				targetTime = targetTime + (upperDiff + 1);
+			else if (childConflict)
+				targetTime = targetTime - (lowerDiff + 1) - (minimumForceNode->executionTime - 1);
+		}
+
+		//target time is either the same as fds schedule time
+		//or was adjusted to avoid conflicts
+		minimumForceNode->scheduleTime = targetTime;
+
+		
+        //check if all nodes are scheduled
+        bool allDone=true;
+        for(unsigned int i = 0 ; i<block->nodeVector.size();i++){
+            allDone&=(block->nodeVector.at(i)->scheduleTime!=0);
+        }
+        fdsNotDone=!allDone;
+        
+        
+        return true;
+	}
+	return false;
+}
 /**************************************************************************************************/
 bool Scheduler::determineAlapSchedule(Block * block){
 
@@ -320,15 +410,33 @@ bool Scheduler::determineAlapSchedule(Block * block){
 		int maxExecuteTime = 0;
 		vector<Node*> predecessors;
 		int remainingTime = block->timeConstraint;
-
+		
+		/*
+		//For testing force certain nodes to be scheduled already w/asap time
+		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
+			currentNode = block->nodeVector.at(i);
+			if (currentNode->asapTime == 2) {
+				//currentNode->scheduled = true;
+				//currentNode->marked = true;
+				currentNode->scheduleTime = 2;
+			}
+		}
+		*/
+		//Check if all nodes that have been FDS scheduled already
+		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
+			currentNode = block->nodeVector.at(i);
+			if (currentNode->scheduleTime != 0) {
+				currentNode->alapTime = currentNode->scheduleTime;
+				currentNode->scheduled = true;
+			}
+		}
 		//Schedule the last nodes in graph first
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
 			remainingTime = block->timeConstraint;
-
-			if (currentNode->last && !currentNode->scheduled) {
-				
-				currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
+			if (currentNode->last) {
+				if(!currentNode->scheduled)
+					currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
 				currentNode->marked = true;
 				currentNode->scheduled = true;
 
@@ -383,7 +491,8 @@ bool Scheduler::determineAlapSchedule(Block * block){
 					}
 					remainingTime = (earliestAlapTime - currentNode->executionTime);
 					//currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
-					currentNode->alapTime = remainingTime;
+					if(currentNode->scheduleTime == 0)
+						currentNode->alapTime = remainingTime;
 					currentNode->scheduled = true;
 				}
 				//Add all current nodes predecessors to queue
@@ -511,7 +620,6 @@ bool Scheduler::asapSchedule(Block * block){
         }
         //increment cycle
         exec_cycle++;
-        
         //check phase
         bool done = true;
         for(unsigned int i = 0; i< block->nodeVector.size();i++){

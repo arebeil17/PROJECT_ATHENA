@@ -33,7 +33,6 @@ Node::Node(){
     scheduleTime = 0;
 	implictedScheduleTime = 0;
 	executionTime = 0;
-	
     asapCount = 1;
     nAsapCount = 1;
 	nVisited = false;

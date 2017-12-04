@@ -12,7 +12,8 @@
 
 //Default Constructor
 ForceData::ForceData(){
-    frameWidth = -1; //Means it wasn't set
+    frameWidth = 0; //Means it wasn't set
+	minTotalForceCycle = 0;
 }
 
 /**************************************************************************************************/
@@ -35,11 +36,17 @@ void ForceData::updateTotalForces(){
 	}
 }
 /**************************************************************************************************/
-void ForceData::updateMinTotalForce(){
+void ForceData::updateMinTotalForce(int alapTime, int asapTime){
 
-	for (unsigned int i = 0; i < totalForces.size(); i++) {
-		if (totalForces.at(i) < minTotalForce) {
-			minTotalForce = totalForces.at(i);
+	for (unsigned int i = 1; i < totalForces.size(); i++) {
+		int currentTime = i;
+		//Check that currentTime is within specified time frame
+		if ((currentTime <= asapTime) && (currentTime >= alapTime)) {
+			//Check for the smallest total force
+			if (totalForces.at(i) <= minTotalForce) {
+				minTotalForce = totalForces.at(i);
+				minTotalForceCycle = i;
+			}
 		}
 	}
 }
