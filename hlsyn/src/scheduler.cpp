@@ -317,7 +317,7 @@ bool Scheduler::updatePredecessorForces(Block* block){
 bool Scheduler::scheduleNode(Block* block){
 	
 	Node * currentNode;
-	Node * minimumForceNode;
+	Node * minimumForceNode = NULL;
 	bool parentConflict = false;
 	bool childConflict = false;
 
@@ -328,77 +328,90 @@ bool Scheduler::scheduleNode(Block* block){
 			currentNode->forceData.updateTotalForces();
 			currentNode->forceData.updateMinTotalForce(currentNode->alapTime, currentNode->alapTime);
 		}
-		minimumForceNode = block->nodeVector.at(0);
-		//2. Find node with the the smallest total force
+		//Find any unscheduled Node to begin
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
-			currentNode = block->nodeVector.at(i);
-			//Check that current node isn't scheduled and that it has the smallest total force
-			if (currentNode->scheduleTime == 0 &&
-				currentNode->forceData.minTotalForce < minimumForceNode->forceData.minTotalForce) {
-				minimumForceNode = currentNode;
+			if (block->nodeVector.at(i)->scheduleTime == 0) {
+				minimumForceNode = block->nodeVector.at(i);
+				break;
 			}
 		}
+		//Check if an unscheduled node was not found
+		if (minimumForceNode != NULL) {
 
-		//Taget schedule time, time we want to schdule node without conflicts
-		//Initially set as time with minimum force determined by FDS
-		int targetTime = minimumForceNode->forceData.minTotalForceCycle;
-
-		//3. Schedule the unscheduled node with minimum force
-		//First Check for scheduling conficts with parents and children
-		vector<Node*> parents;  //scheduled parents
-		vector<Node*> children; //scheduled children
-		Node* parentNode;
-		Node* childNode;
-		int upperDiff = 0, lowerDiff = 0, currentDiff = 0;
-		
-		//Determine scheduled Parents with conflicts
-		for (unsigned int i = 0; i < minimumForceNode->parentNodes.size(); i++) {
-			parentNode = minimumForceNode->parentNodes.at(i);
-			if (parentNode->scheduleTime != 0) {
-				parents.push_back(parentNode);
-				int endTime = parentNode->scheduleTime - (parentNode->executionTime - 1);
-				if (targetTime <= endTime) {
-					parentConflict = true;
-					currentDiff = abs(targetTime - endTime);
-					if (upperDiff < currentDiff)
-						upperDiff = currentDiff;
+			//2. Find node with the the smallest total force
+			for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
+				currentNode = block->nodeVector.at(i);
+				//Check that current node isn't scheduled and that it has the smallest total force
+				if (currentNode->scheduleTime == 0 &&
+					currentNode->forceData.minTotalForce < minimumForceNode->forceData.minTotalForce) {
+					minimumForceNode = currentNode;
 				}
 			}
-		}
-		//Determine scheduled Children with conflicts
-		for (unsigned int i = 0; i < minimumForceNode->childNodes.size(); i++) {
-			childNode = minimumForceNode->childNodes.at(i);
-			if (childNode->scheduleTime != 0) {
-				children.push_back(childNode);
-				int startTime = childNode->scheduleTime;
-				if (targetTime >= startTime) {
-					childConflict = true;
-					currentDiff = abs(targetTime - startTime);
-					if (lowerDiff < currentDiff)
-						lowerDiff = currentDiff;
+
+			//Taget schedule time, time we want to schdule node without conflicts
+			//Initially set as time with minimum force determined by FDS
+			int targetTime = minimumForceNode->forceData.minTotalForceCycle;
+
+			//3. Schedule the unscheduled node with minimum force
+			//First Check for scheduling conficts with parents and children
+			
+				vector<Node*> parents;  //scheduled parents
+				vector<Node*> children; //scheduled children
+				Node* parentNode;
+				Node* childNode;
+				int upperDiff = 0, lowerDiff = 0, currentDiff = 0;
+
+				//Determine scheduled Parents with conflicts
+				for (unsigned int i = 0; i < minimumForceNode->parentNodes.size(); i++) {
+					parentNode = minimumForceNode->parentNodes.at(i);
+					if (parentNode->scheduleTime != 0) {
+						parents.push_back(parentNode);
+						int endTime = parentNode->scheduleTime - (parentNode->executionTime - 1);
+						if (targetTime <= endTime) {
+							parentConflict = true;
+							currentDiff = abs(targetTime - endTime);
+							if (upperDiff < currentDiff)
+								upperDiff = currentDiff;
+						}
+					}
 				}
-			}
-		}
-		//Check for conflicts, attempt to adjust targetTime
-		if (parentConflict || childConflict) {
-			if (parentConflict)
-				targetTime = targetTime + (upperDiff + 1);
-			else if (childConflict)
-				targetTime = targetTime - (lowerDiff + 1) - (minimumForceNode->executionTime - 1);
-		}
+				//Determine scheduled Children with conflicts
+				for (unsigned int i = 0; i < minimumForceNode->childNodes.size(); i++) {
+					childNode = minimumForceNode->childNodes.at(i);
+					if (childNode->scheduleTime != 0) {
+						children.push_back(childNode);
+						int startTime = childNode->scheduleTime;
+						if (targetTime >= startTime) {
+							childConflict = true;
+							currentDiff = abs(targetTime - startTime);
+							if (lowerDiff < currentDiff)
+								lowerDiff = currentDiff;
+						}
+					}
+				}
+				//Check for conflicts, attempt to adjust targetTime
+				if (parentConflict || childConflict) {
+					if (parentConflict)
+						targetTime = targetTime + (upperDiff + 1);
+					else if (childConflict)
+						targetTime = targetTime - (lowerDiff + 1) - (minimumForceNode->executionTime - 1);
+				}
 
-		//target time is either the same as fds schedule time
-		//or was adjusted to avoid conflicts
-		minimumForceNode->scheduleTime = targetTime;
+				//target time is either the same as fds schedule time
+				//or was adjusted to avoid conflicts
 
-		
+				minimumForceNode->scheduleTime = targetTime;
+				cout << "\n----------------------------------------------------------------------" << endl;
+				cout << "Scheduled Node: " << minimumForceNode->id << " Scheduled Time: " << minimumForceNode->scheduleTime << endl;
+				cout << "----------------------------------------------------------------------" << endl;
+		}
+	
         //check if all nodes are scheduled
         bool allDone=true;
         for(unsigned int i = 0 ; i<block->nodeVector.size();i++){
             allDone &= (block->nodeVector.at(i)->scheduleTime != 0);
         }
         fdsNotDone=!allDone;
-        
         
         return true;
 	}
