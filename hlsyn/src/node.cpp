@@ -30,7 +30,6 @@ Node::Node(){
 	timeConstraint = -1;
     scheduleTime = 0;
 	executionTime = 0;
-	
     asapCount = 1;
     nAsapCount = 1;
 	nVisited = false;

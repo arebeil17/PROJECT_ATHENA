@@ -12,7 +12,7 @@
 
 //Default Constructor
 ForceData::ForceData(){
-    frameWidth = -1; //Means it wasn't set
+    frameWidth = 0; //Means it wasn't set
 }
 
 /**************************************************************************************************/
