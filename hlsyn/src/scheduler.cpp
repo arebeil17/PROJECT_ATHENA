@@ -113,6 +113,7 @@ bool Scheduler::updateSucessorForces(Block* block){
 /**************************************************************************************************/
 //Determines which node should be scheduled based on the minimum total force
 bool Scheduler::scheduleNode(Block* block){
+	
 	Node * currentNode;
 	Node * minimumForceNode;
 	bool parentConflict = false;
@@ -129,8 +130,8 @@ bool Scheduler::scheduleNode(Block* block){
 		//2. Find node with the the smallest total force
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
-			//Check that current node isn't scheduled and that it has a smaller total force
-			if (currentNode->scheduleTime != 0 &&
+			//Check that current node isn't scheduled and that it has the smallest total force
+			if (currentNode->scheduleTime == 0 &&
 				currentNode->forceData.minTotalForce < minimumForceNode->forceData.minTotalForce) {
 				minimumForceNode = currentNode;
 			}
@@ -147,6 +148,7 @@ bool Scheduler::scheduleNode(Block* block){
 		Node* parentNode;
 		Node* childNode;
 		int upperDiff = 0, lowerDiff = 0, currentDiff = 0;
+		
 		//Determine scheduled Parents with conflicts
 		for (unsigned int i = 0; i < minimumForceNode->parentNodes.size(); i++) {
 			parentNode = minimumForceNode->parentNodes.at(i);
@@ -182,10 +184,11 @@ bool Scheduler::scheduleNode(Block* block){
 			else if (childConflict)
 				targetTime = targetTime - (lowerDiff + 1) - (minimumForceNode->executionTime - 1);
 		}
-		//target time stayed is either the same as fds schedule time
-		//or adjusted to avoid conflicts
 
+		//target time is either the same as fds schedule time
+		//or was adjusted to avoid conflicts
 		minimumForceNode->scheduleTime = targetTime;
+
 		return true;
 	}
 	return false;

@@ -38,14 +38,14 @@ void ForceData::updateTotalForces(){
 /**************************************************************************************************/
 void ForceData::updateMinTotalForce(int alapTime, int asapTime){
 
-	for (unsigned int i = 0; i < totalForces.size(); i++) {
-		int currentTime = (i + 1);
+	for (unsigned int i = 1; i < totalForces.size(); i++) {
+		int currentTime = i;
 		//Check that currentTime is within specified time frame
 		if ((currentTime <= asapTime) && (currentTime >= alapTime)) {
 			//Check for the smallest total force
 			if (totalForces.at(i) <= minTotalForce) {
 				minTotalForce = totalForces.at(i);
-				minTotalForceCycle = (i + 1);
+				minTotalForceCycle = i;
 			}
 		}
 	}
