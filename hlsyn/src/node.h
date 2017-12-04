@@ -59,9 +59,12 @@ class Node {
 		int alapTime;
 		int asapTime;
 		int scheduleTime;
+		int implictedScheduleTime;
 		int executionTime;
         int timeConstraint;
 		//FDS Variables
+		Node* fromNode;
+		Node* toNode;
 		ForceData forceData;
 		//Compute and Update Frame Width
 		void updateFrameParams();
@@ -79,6 +82,8 @@ class Node {
 		void computeDelay();
 		//Reset Traverse Parameters
 		void reset();
+		//isInTimeFrame
+		bool isInTimeFrame(int givenTime);
 };
  
 #endif //Node_H

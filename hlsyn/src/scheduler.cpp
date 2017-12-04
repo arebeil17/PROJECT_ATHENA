@@ -25,7 +25,6 @@ void Scheduler::forceDirectedScheduling(Block* block){
         updatePredecessorForces(block);
         updateSucessorForces(block);
         scheduleNode(block);
-        block->printSchedulingInfo();
     };
 }
 bool Scheduler::updateTimeFrame(Block* block){
@@ -94,6 +93,7 @@ bool Scheduler::updateSelfForce(Block* block){
     for(unsigned int i = 0; i< block->nodeVector.size(); i++){
         block->nodeVector.at(i)->updateSelfForces(aluDistribution,multDistribution,divModDistribution);
 //#if 0
+    cout << "-------------Self Forces--------------------------------------------------" << endl;
         cout << "Node "<< i << " : ";
         for (int j = 1; j <= block->timeConstraint; j++) {
 		    cout << "\t"<< block->nodeVector.at(i)->forceData.selfForces.at(j);
@@ -102,9 +102,207 @@ bool Scheduler::updateSelfForce(Block* block){
 //#endif
     } 
    fdsNotDone = false; // temperally stop here 
-    return true;}
-bool Scheduler::updatePredecessorForces(Block* block){return true;}
-bool Scheduler::updateSucessorForces(Block* block){return true;}
+ return true;
+}
+
+
+vector<Node*> Scheduler::generateSuccessorQueue(Block* block, unsigned int nodeIndex){
+	Node* currentNode = block->nodeVector.at(nodeIndex);
+    //Node* childNode;
+    queue<Node*>   frontierQueue;
+    vector<Node*>   successorQueue;
+    frontierQueue.push(currentNode); //beginning node for exploration 
+	block->resetAll();
+    while(frontierQueue.size()!=0){
+        //for(unsigned int i = 0; i< frontierQueue.size(); i++){
+            currentNode = frontierQueue.front();
+            frontierQueue.pop();
+            for	(unsigned i = 0; i<currentNode-> childNodes.size(); i++){
+                if(currentNode->childNodes.at(i)->marked!=true){
+                    currentNode->childNodes.at(i)->marked=true;
+                    currentNode->childNodes.at(i)->fromNode = currentNode;
+                    frontierQueue.push(currentNode->childNodes.at(i));
+                    successorQueue.push_back(currentNode->childNodes.at(i));
+                }
+            }
+            currentNode->visited = true;
+    }
+return successorQueue;
+}
+
+bool Scheduler::updateSucessorForces(Block* block){
+    for(unsigned int i = 0; i< block->nodeVector.size(); i++){
+        Node * currentNode = block->nodeVector.at(i);
+        // push a dummy cycle start at time 1
+        currentNode->forceData.successorForces.push_back(0.0);
+        for(int j = 1; j<=block->timeConstraint; j++){
+            vector<Node*>   successorQueue;
+            Node * startNode = nullptr;
+            successorQueue = generateSuccessorQueue(block,i);
+            float tempForce = 0.0;
+            if(j>=currentNode->asapTime && j<=currentNode->alapTime){
+                int nowTime = j;
+                while(successorQueue.size()!=0){
+                    //find the lowest asap
+                    int asapTrial=65536; // any big initial number greater than any possible asap
+                    int si;
+                    bool hasSameCycle = false;
+                    int restoreTime;
+                    for(unsigned int i =0; i<successorQueue.size();i++){
+                        if(asapTrial==successorQueue.at(i)->asapTime){
+                            hasSameCycle = true; // already has a node that has been set
+                        }
+                        else if(asapTrial>successorQueue.at(i)->asapTime){
+                            asapTrial = successorQueue.at(i)->asapTime;
+                            startNode = successorQueue.at(i);
+                            si = i; // memorize index
+                        }
+                    }
+                    if(startNode->isInTimeFrame(nowTime)){
+                        if(hasSameCycle){
+                            restoreTime = nowTime;
+                        }
+
+                        if(startNode->fromNode->op=="MUL"){
+                            nowTime+=2;
+                        }
+                        else if(startNode->fromNode->op=="DIV"){
+                            nowTime+=3;
+                        }
+                        else if(startNode->fromNode->op=="MOD"){
+                            nowTime+=3;
+                        }
+                        else{
+                            nowTime++;
+                        }
+                        tempForce += startNode->forceData.selfForces.at(nowTime);
+                        
+                        if(hasSameCycle){
+                            nowTime = restoreTime;
+                        }
+                        //node is done, remove this one
+                        successorQueue.erase(successorQueue.begin()+si);
+                    }
+                    else{
+                        successorQueue.clear(); //no available successors
+                    }
+                }
+                currentNode->forceData.successorForces.push_back(tempForce);
+            }
+            else{
+                currentNode->forceData.successorForces.push_back(0.0);
+            }
+        }
+    //#if 0
+        cout << "-------------Successor Forces--------------------------------------------------" << endl;
+        cout << "Node "<< i << " : ";
+        for (int j = 1; j <= block->timeConstraint; j++) {
+		    cout << "\t"<< block->nodeVector.at(i)->forceData.successorForces.at(j);
+	    }
+        cout<<endl;
+//#endif
+    }
+    return true;
+}
+
+vector<Node*> Scheduler::generatePredecessorQueue(Block* block, unsigned int nodeIndex){
+	Node* currentNode = block->nodeVector.at(nodeIndex);
+    //Node* childNode;
+    queue<Node*>   frontierQueue;
+    vector<Node*>   predecessorQueue;
+    frontierQueue.push(currentNode); //beginning node for exploration 
+	block->resetAll();
+    while(frontierQueue.size()!=0){
+        //for(unsigned int i = 0; i< frontierQueue.size(); i++){
+            currentNode = frontierQueue.front();
+            frontierQueue.pop();
+            for	(unsigned i = 0; i<currentNode-> parentNodes.size(); i++){
+                if(currentNode->parentNodes.at(i)->marked!=true){
+                    currentNode->parentNodes.at(i)->marked=true;
+                    currentNode->parentNodes.at(i)->toNode = currentNode;
+                    frontierQueue.push(currentNode->parentNodes.at(i));
+                    predecessorQueue.push_back(currentNode->parentNodes.at(i));
+                }
+            }
+            currentNode->visited = true;
+    }
+return predecessorQueue;
+}
+
+bool Scheduler::updatePredecessorForces(Block* block){
+     for(unsigned int i = 0; i< block->nodeVector.size(); i++){
+        Node * currentNode = block->nodeVector.at(i);
+        // push a dummy cycle start at time 1
+        currentNode->forceData.predecessorForces.push_back(0.0);
+        for(int j = 1; j<=block->timeConstraint; j++){
+            vector<Node*>   predecessorQueue;
+            Node * startNode = nullptr;
+            predecessorQueue = generatePredecessorQueue(block,i);
+            float tempForce = 0.0;
+            if(j>=currentNode->asapTime && j<=currentNode->alapTime){
+                int nowTime = j;
+                while(predecessorQueue.size()!=0){
+                    //find the highest alap in all predecessors -> the closest child node 
+                    int alapTrial=0; // any small initial number smaller than any possible alap
+                    int si;
+                    bool hasSameCycle = false;
+                    int restoreTime;
+                    for(unsigned int i =0; i<predecessorQueue.size();i++){
+                        if(alapTrial==predecessorQueue.at(i)->alapTime){
+                            hasSameCycle = true; // already has a node that has been set
+                        }
+                        else if(alapTrial<predecessorQueue.at(i)->alapTime){
+                            alapTrial = predecessorQueue.at(i)->alapTime;
+                            startNode = predecessorQueue.at(i);
+                            si = i; // memorize index
+                        }
+                    }
+                    if(startNode->isInTimeFrame(nowTime)){
+                        if(hasSameCycle){
+                            restoreTime = nowTime;
+                        }
+
+                        if(startNode->op=="MUL"){
+                            nowTime-=2;
+                        }
+                        else if(startNode->op=="DIV"){
+                            nowTime-=3;
+                        }
+                        else if(startNode->op=="MOD"){
+                            nowTime-=3;
+                        }
+                        else{
+                            nowTime--;
+                        }
+                        tempForce += startNode->forceData.selfForces.at(nowTime);
+                        
+                        if(hasSameCycle){
+                            nowTime = restoreTime;
+                        }
+                        //node is done, remove this one
+                        predecessorQueue.erase(predecessorQueue.begin()+si);
+                    }
+                    else{
+                        predecessorQueue.clear(); //no available successors
+                    }
+                }
+                currentNode->forceData.predecessorForces.push_back(tempForce);
+            }
+            else{
+                currentNode->forceData.predecessorForces.push_back(0.0);
+            }
+        }
+    //#if 0
+        cout << "-------------Predecessors Forces--------------------------------------------------" << endl;
+        cout << "Node "<< i << " : ";
+        for (int j = 1; j <= block->timeConstraint; j++) {
+		    cout << "\t"<< block->nodeVector.at(i)->forceData.predecessorForces.at(j);
+	    }
+        cout<<endl;
+//#endif
+    }
+    return true;
+}   
 bool Scheduler::scheduleNode(Block* block){return true;}
 /**************************************************************************************************/
 bool Scheduler::determineAlapSchedule(Block * block){

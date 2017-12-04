@@ -52,6 +52,8 @@ class Scheduler {
         bool updatePredecessorForces(Block* block);
         bool updateSucessorForces(Block* block);
         bool scheduleNode(Block* block);
+        vector<Node*> generateSuccessorQueue(Block* block, unsigned int nodeIndex);
+        vector<Node*> generatePredecessorQueue(Block* block, unsigned int nodeIndex);
 };
  
 #endif //SCHEDULER_H

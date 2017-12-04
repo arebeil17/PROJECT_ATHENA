@@ -23,12 +23,15 @@ Node::Node(){
 	marked = false;
 	signedBit = false;
 	criticalNode = NULL;
+    fromNode = nullptr;
+    toNode = nullptr;
 	depth = 0;
 	parentBlockId = 0;
 	alapTime = 0;
 	asapTime = 0;
 	timeConstraint = -1;
     scheduleTime = 0;
+	implictedScheduleTime = 0;
 	executionTime = 0;
 	
     asapCount = 1;
@@ -37,6 +40,13 @@ Node::Node(){
 	nMarked = false;
 }
 
+/**************************************************************************************************/
+// is the given time slot in this node's time frame?
+bool Node::isInTimeFrame(int givenTime){
+
+return (givenTime>=asapTime&&givenTime<=alapTime);
+
+}
 
 /**************************************************************************************************/
 //Compute and Update Frame Width
