@@ -348,7 +348,7 @@ bool Scheduler::scheduleNode(Block* block){
 				}
 			}
 
-			//Taget schedule time, time we want to schdule node without conflicts
+			//Taget schedule time, time we want to schedule node without conflicts
 			//Initially set as time with minimum force determined by FDS
 			int targetTime = minimumForceNode->forceData.minTotalForceCycle;
 
@@ -391,6 +391,7 @@ bool Scheduler::scheduleNode(Block* block){
 				}
 				//Check for conflicts, attempt to adjust targetTime
 				if (parentConflict || childConflict) {
+					cout << "\nConflict Detected, Scheduled time was: " + targetTime << endl;
 					if (parentConflict)
 						targetTime = targetTime + (upperDiff + 1);
 					else if (childConflict)

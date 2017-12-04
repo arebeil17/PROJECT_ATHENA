@@ -257,6 +257,11 @@ bool Output::makeStateMachine(vector<State>* states){
 		this->verilogText += "\t\tcase(State)\n";
 		this->verilogText += "\t\t\tWait:begin\n"; //Initial Wait state
 		this->verilogText += "\t\t\t\tDone <= 0;\n";
+		//Reset All Registers
+		for (unsigned int i = 0; i < netListVector->size(); i++) {
+			if(netListVector->at(i).type == "register" || netListVector->at(i).type == "output")
+				this->verilogText += "\t\t\t\t" + netListVector->at(i).name + " <= 0;\n";
+		}
 		this->verilogText += "\t\t\t\tif(Start)\n";
 		if(states->size() > 0)
 			this->verilogText += "\t\t\t\t\tNextState <= " + states->at(0).name + ";\n";
