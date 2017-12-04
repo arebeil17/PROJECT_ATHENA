@@ -578,6 +578,8 @@ bool Scheduler::asapSchedule(Block * block){
 				block->nodeVector.at(i)->nVisited = true;
 				newScheduled.push_back(block->nodeVector.at(i));
 				block->nodeVector.at(i)->asapTime = exec_cycle;
+				//Check for exceeded time constaint
+				if (block->timeConstraint < exec_cycle) return false;
 
                 if(block->nodeVector.at(i)->op=="MUL"){
                     block->nodeVector.at(i)->nAsapCount++;
@@ -627,9 +629,8 @@ bool Scheduler::asapSchedule(Block * block){
                 }
             }
         }
-		//Check for exceeded time constaint
-		if (block->timeConstraint < exec_cycle) return false;
-        //increment cycle
+		
+		//increment cycle
         exec_cycle++;
         //check phase
         bool done = true;
