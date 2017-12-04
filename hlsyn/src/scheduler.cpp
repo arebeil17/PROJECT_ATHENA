@@ -122,15 +122,32 @@ bool Scheduler::determineAlapSchedule(Block * block){
 		int maxExecuteTime = 0;
 		vector<Node*> predecessors;
 		int remainingTime = block->timeConstraint;
-
+		/*
+		//For testing force certain nodes to be scheduled already w/asap time
+		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
+			currentNode = block->nodeVector.at(i);
+			if (currentNode->asapTime == 2) {
+				//currentNode->scheduled = true;
+				//currentNode->marked = true;
+				currentNode->scheduleTime = 2;
+			}
+		}
+		*/
+		//Check if all nodes that have been FDS scheduled already
+		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
+			currentNode = block->nodeVector.at(i);
+			if (currentNode->scheduleTime != 0) {
+				currentNode->alapTime = currentNode->scheduleTime;
+				currentNode->scheduled = true;
+			}
+		}
 		//Schedule the last nodes in graph first
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
 			remainingTime = block->timeConstraint;
-
-			if (currentNode->last && !currentNode->scheduled) {
-				
-				currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
+			if (currentNode->last) {
+				if(!currentNode->scheduled)
+					currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
 				currentNode->marked = true;
 				currentNode->scheduled = true;
 
@@ -185,7 +202,8 @@ bool Scheduler::determineAlapSchedule(Block * block){
 					}
 					remainingTime = (earliestAlapTime - currentNode->executionTime);
 					//currentNode->alapTime = remainingTime - (currentNode->executionTime - 1);
-					currentNode->alapTime = remainingTime;
+					if(currentNode->scheduleTime == 0)
+						currentNode->alapTime = remainingTime;
 					currentNode->scheduled = true;
 				}
 				//Add all current nodes predecessors to queue
@@ -313,7 +331,6 @@ bool Scheduler::asapSchedule(Block * block){
         }
         //increment cycle
         exec_cycle++;
-        
         //check phase
         bool done = true;
         for(unsigned int i = 0; i< block->nodeVector.size();i++){

@@ -76,6 +76,5 @@ int main(int argc, char *argv[]) {
 		cout << "\nUsage: " << argv[0] << " cFile latency verilogFile" << endl;
 		return -1;
 	}
-
     return 0;
 }
