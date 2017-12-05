@@ -15,12 +15,15 @@ Scheduler::Scheduler(){
 }
 /**************************************************************************************************/
 bool Scheduler::forceDirectedScheduling(Block* block){
+
     while(fdsNotDone){
 		if (updateTimeFrame(block)) {
-			updateDistributions(block);
-			updateSelfForce(block);
-			updatePredecessorForces(block);
-			updateSucessorForces(block);
+			//For testing
+			block->printSchedulingInfo();
+			updateDistributions(block, PRINT_ENABLED);
+			updateSelfForce(block, PRINT_ENABLED);
+			updatePredecessorForces(block, PRINT_ENABLED);
+			updateSucessorForces(block, PRINT_ENABLED);
 			scheduleNode(block);
 		}
 		else {
@@ -48,7 +51,7 @@ bool Scheduler::updateTimeFrame(Block* block){
     return true;
 }
 /**************************************************************************************************/
-bool Scheduler::updateDistributions(Block* block){
+bool Scheduler::updateDistributions(Block* block, bool print){
     //clear distribution and update by new probabilities
     aluDistribution.clear();
     multDistribution.clear();
@@ -79,37 +82,38 @@ bool Scheduler::updateDistributions(Block* block){
         multDistribution.push_back(multTemp);
         divModDistribution.push_back(divModTemp);
     }
-//#if 0
-	cout << endl << "All distribution: \n";
-	cout << "--------------------------------------------------------------------------" << endl;
-	cout << "aluDG: ";
-	for (int i = 1; i <= block->timeConstraint; i++) {
-		cout << "	"<< aluDistribution.at(i);
+	if (print) {
+		cout << endl << "All distribution: \n";
+		cout << "--------------------------------------------------------------------------" << endl;
+		cout << "aluDG: ";
+		for (int i = 1; i <= block->timeConstraint; i++) {
+			cout << "	" << aluDistribution.at(i);
+		}
+		cout << endl;
+		cout << "--------------------------------------------------------------------------" << endl;
+		cout << "--------------------------------------------------------------------------" << endl;
+		cout << "mulDG: ";
+		for (int i = 1; i <= block->timeConstraint; i++) {
+			cout << "	" << multDistribution.at(i);
+		}
+		cout << endl;
+		cout << "--------------------------------------------------------------------------" << endl;
 	}
-    cout<<endl;
-    cout << "--------------------------------------------------------------------------" << endl;
-	cout << "--------------------------------------------------------------------------" << endl;
-	cout << "mulDG: ";
-	for (int i = 1; i <= block->timeConstraint; i++) {
-		cout << "	"<< multDistribution.at(i);
-	}
-    cout<<endl;
-    cout << "--------------------------------------------------------------------------" << endl;
-//#endif
     return true;
 }
 /**************************************************************************************************/
-bool Scheduler::updateSelfForce(Block* block){
+bool Scheduler::updateSelfForce(Block* block, bool print){
     for(unsigned int i = 0; i< block->nodeVector.size(); i++){
         block->nodeVector.at(i)->updateSelfForces(aluDistribution,multDistribution,divModDistribution);
-//#if 0
-    cout << "-------------Self Forces--------------------------------------------------" << endl;
-        cout << "Node "<< i << " : ";
-        for (int j = 1; j <= block->timeConstraint; j++) {
-		    cout << "\t"<< block->nodeVector.at(i)->forceData.selfForces.at(j);
-	    }
-        cout<<endl;
-//#endif
+	
+		if (print) {
+			cout << "-------------Self Forces--------------------------------------------------" << endl;
+			cout << "Node " << i << " : ";
+			for (int j = 1; j <= block->timeConstraint; j++) {
+				cout << "\t" << block->nodeVector.at(i)->forceData.selfForces.at(j);
+			}
+			cout << endl;
+		}
     } 
    fdsNotDone = false; // temperally stop here 
  return true;
@@ -139,7 +143,7 @@ vector<Node*> Scheduler::generateSuccessorQueue(Block* block, unsigned int nodeI
 return successorQueue;
 }
 /**************************************************************************************************/
-bool Scheduler::updateSucessorForces(Block* block){
+bool Scheduler::updateSucessorForces(Block* block, bool print){
     for(unsigned int i = 0; i< block->nodeVector.size(); i++){
         Node * currentNode = block->nodeVector.at(i);
         // push a dummy cycle start at time 1
@@ -202,14 +206,14 @@ bool Scheduler::updateSucessorForces(Block* block){
                 currentNode->forceData.successorForces.push_back(0.0);
             }
         }
-    //#if 0
-        cout << "-------------Successor Forces--------------------------------------------------" << endl;
-        cout << "Node "<< i << " : ";
-        for (int j = 1; j <= block->timeConstraint; j++) {
-		    cout << "\t"<< block->nodeVector.at(i)->forceData.successorForces.at(j);
-	    }
-        cout<<endl;
-//#endif
+		if (print) {
+			cout << "-------------Successor Forces--------------------------------------------------" << endl;
+			cout << "Node " << i << " : ";
+			for (int j = 1; j <= block->timeConstraint; j++) {
+				cout << "\t" << block->nodeVector.at(i)->forceData.successorForces.at(j);
+			}
+			cout << endl;
+		}
     }
     return true;
 }
@@ -238,7 +242,7 @@ vector<Node*> Scheduler::generatePredecessorQueue(Block* block, unsigned int nod
 return predecessorQueue;
 }
 /**************************************************************************************************/
-bool Scheduler::updatePredecessorForces(Block* block){
+bool Scheduler::updatePredecessorForces(Block* block, bool print){
      for(unsigned int i = 0; i< block->nodeVector.size(); i++){
         Node * currentNode = block->nodeVector.at(i);
         // push a dummy cycle start at time 1
@@ -301,14 +305,14 @@ bool Scheduler::updatePredecessorForces(Block* block){
                 currentNode->forceData.predecessorForces.push_back(0.0);
             }
         }
-    //#if 0
-        cout << "-------------Predecessors Forces--------------------------------------------------" << endl;
-        cout << "Node "<< i << " : ";
-        for (int j = 1; j <= block->timeConstraint; j++) {
-		    cout << "\t"<< block->nodeVector.at(i)->forceData.predecessorForces.at(j);
-	    }
-        cout<<endl;
-//#endif
+		if (print) {
+			cout << "-------------Predecessors Forces--------------------------------------------------" << endl;
+			cout << "Node " << i << " : ";
+			for (int j = 1; j <= block->timeConstraint; j++) {
+				cout << "\t" << block->nodeVector.at(i)->forceData.predecessorForces.at(j);
+			}
+			cout << endl;
+		}
     }
     return true;
 }   
@@ -402,9 +406,11 @@ bool Scheduler::scheduleNode(Block* block){
 				//or was adjusted to avoid conflicts
 
 				minimumForceNode->scheduleTime = targetTime;
-				cout << "\n----------------------------------------------------------------------" << endl;
-				cout << "Scheduled Node: " << minimumForceNode->id << " Scheduled Time: " << minimumForceNode->scheduleTime << endl;
-				cout << "----------------------------------------------------------------------" << endl;
+				//if (PRINT_ENABLED) {
+					cout << "\n**************************************************************************" << endl;
+					cout << "Scheduled Node: " << minimumForceNode->id << " in Time: " << minimumForceNode->scheduleTime << " Total Force: " << minimumForceNode->forceData.minTotalForce << endl;
+					cout << "**************************************************************************" << endl;
+				//}
 		}
 	
         //check if all nodes are scheduled

@@ -24,8 +24,11 @@
 #include "net.h"
 #include "block.h"
 
+//Set to 1 in order to print all the FDS information
+#define PRINT_ENABLED 0
 /**************************************************************************************************/
 using namespace std;
+
 
 class Scheduler { 
     private: 	
@@ -47,10 +50,10 @@ class Scheduler {
 		bool asapSchedule(Block * block);
 
         bool updateTimeFrame(Block* block);
-        bool updateDistributions(Block* block);
-        bool updateSelfForce(Block* block);
-        bool updatePredecessorForces(Block* block);
-        bool updateSucessorForces(Block* block);
+        bool updateDistributions(Block* block, bool print);
+        bool updateSelfForce(Block* block, bool print);
+        bool updatePredecessorForces(Block* block, bool print);
+        bool updateSucessorForces(Block* block, bool print);
         bool scheduleNode(Block* block);
         vector<Node*> generateSuccessorQueue(Block* block, unsigned int nodeIndex);
         vector<Node*> generatePredecessorQueue(Block* block, unsigned int nodeIndex);

@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 						if (!scheduler.forceDirectedScheduling(synthesis.blockVector.at(i))) {
 							return -1;
 						}
-						synthesis.blockVector.at(i)->printSchedulingInfo();
+						//synthesis.blockVector.at(i)->printSchedulingInfo();
                     }
                 }
                 //Output HLSM verilog file
