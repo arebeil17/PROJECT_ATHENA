@@ -14,6 +14,7 @@
 ForceData::ForceData(){
     frameWidth = 0; //Means it wasn't set
 	minTotalForceCycle = 0;
+	minTotalForce = 10000;
 }
 
 /**************************************************************************************************/
@@ -38,10 +39,11 @@ void ForceData::updateTotalForces(){
 /**************************************************************************************************/
 void ForceData::updateMinTotalForce(int alapTime, int asapTime){
 
+	minTotalForce = 10000;
 	for (unsigned int i = 1; i < totalForces.size(); i++) {
 		int currentTime = i;
 		//Check that currentTime is within specified time frame
-		if ((currentTime <= asapTime) && (currentTime >= alapTime)) {
+		if ((currentTime >= asapTime) && (currentTime <= alapTime)) {
 			//Check for the smallest total force
 			if (totalForces.at(i) <= minTotalForce) {
 				minTotalForce = totalForces.at(i);
