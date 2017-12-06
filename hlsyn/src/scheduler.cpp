@@ -336,7 +336,7 @@ bool Scheduler::scheduleNode(Block* block){
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
 			currentNode = block->nodeVector.at(i);
 			currentNode->forceData.updateTotalForces();
-			currentNode->forceData.updateMinTotalForce(currentNode->alapTime, currentNode->alapTime);
+			currentNode->forceData.updateMinTotalForce(currentNode->alapTime, currentNode->asapTime);
 		}
 		//Find any unscheduled Node to begin
 		for (unsigned int i = 0; i < block->nodeVector.size(); i++) {
