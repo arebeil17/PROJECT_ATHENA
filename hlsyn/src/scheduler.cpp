@@ -110,7 +110,7 @@ bool Scheduler::updateSelfForce(Block* block, bool print){
 	
 		if (print) {
 			cout << "-------------Self Forces--------------------------------------------------" << endl;
-			cout << "Node " << i << " : ";
+			cout << "Node " << block->nodeVector.at(i)->id << " : ";
 			for (int j = 1; j <= block->timeConstraint; j++) {
 				cout << "\t" << block->nodeVector.at(i)->forceData.selfForces.at(j);
 			}
@@ -214,7 +214,7 @@ bool Scheduler::updateSucessorForces(Block* block, bool print){
         }
 		if (print) {
 			cout << "-------------Successor Forces--------------------------------------------------" << endl;
-			cout << "Node " << i << " : ";
+			cout << "Node " << block->nodeVector.at(i)->id << " : ";
 			for (int j = 1; j <= block->timeConstraint; j++) {
 				cout << "\t" << block->nodeVector.at(i)->forceData.successorForces.at(j);
 			}
@@ -313,7 +313,7 @@ bool Scheduler::updatePredecessorForces(Block* block, bool print){
         }
 		if (print) {
 			cout << "-------------Predecessors Forces--------------------------------------------------" << endl;
-			cout << "Node " << i << " : ";
+			cout << "Node " << block->nodeVector.at(i)->id << " : ";
 			for (int j = 1; j <= block->timeConstraint; j++) {
 				cout << "\t" << block->nodeVector.at(i)->forceData.predecessorForces.at(j);
 			}

@@ -25,7 +25,7 @@
 #include "block.h"
 
 //Set to 1 in order to print all the FDS information
-#define PRINT_ENABLED 0
+#define PRINT_ENABLED 1
 /**************************************************************************************************/
 using namespace std;
 
