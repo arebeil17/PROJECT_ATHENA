@@ -19,12 +19,13 @@ bool Scheduler::forceDirectedScheduling(Block* block){
     while(fdsNotDone){
 		if (updateTimeFrame(block)) {
 			//For testing
-			block->printSchedulingInfo();
+			//block->printSchedulingInfo();
 			updateDistributions(block, PRINT_ENABLED);
 			updateSelfForce(block, PRINT_ENABLED);
 			updatePredecessorForces(block, PRINT_ENABLED);
 			updateSucessorForces(block, PRINT_ENABLED);
 			scheduleNode(block);
+			block->printSchedulingInfo();
 		}
 		else {
 			fdsNotDone = false;
@@ -32,6 +33,7 @@ bool Scheduler::forceDirectedScheduling(Block* block){
 			return false;
 		}
     };
+	block->printSchedulingInfo();
 	return true;
 }
 /**************************************************************************************************/

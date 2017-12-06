@@ -77,7 +77,7 @@ void Block::printSchedulingInfo(){
 			string op = nodeVector.at(i)->op;
 			int diff = 8 - op.length();
 			if (diff > 0) for (int j = 0; j < diff; j++) op += " ";
-			cout << "Node Id: "<<nodeVector.at(i)->id <<"  Op: " << op << " Last: " << nodeVector.at(i)->last <<"  Alap: " << setw(3) << nodeVector.at(i)->alapTime << " Asap: " << nodeVector.at(i)->asapTime << " FDS Schedule: " << nodeVector.at(i)->scheduleTime <<endl;
+			cout << "Node Id: "<<nodeVector.at(i)->id <<"  Op: " << op << " Last: " << nodeVector.at(i)->last <<"  Alap: " << setw(3) << nodeVector.at(i)->alapTime << " Asap: " << nodeVector.at(i)->asapTime << " FDS Schedule: " << nodeVector.at(i)->scheduleTime << " Min TF: " << nodeVector.at(i)->forceData.minTotalForce <<endl;
 		}
 	}
 	else {
