@@ -45,7 +45,7 @@ void ForceData::updateMinTotalForce(int alapTime, int asapTime){
 		//Check that currentTime is within specified time frame
 		if ((currentTime >= asapTime) && (currentTime <= alapTime)) {
 			//Check for the smallest total force
-			if (totalForces.at(i) <= minTotalForce) {
+			if (totalForces.at(i) < minTotalForce) {
 				minTotalForce = totalForces.at(i);
 				minTotalForceCycle = i;
 			}
