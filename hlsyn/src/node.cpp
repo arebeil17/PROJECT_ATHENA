@@ -325,5 +325,10 @@ void Node::reset(){
 	scheduled = false;
 	visited = false;
 	marked = false;
+    //below were used by asap
+    nMarked = false;
+    nVisited = false;
+    asapCount = 1;
+    nAsapCount = 1;
 }
 /**************************************************************************************************/
