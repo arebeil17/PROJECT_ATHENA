@@ -155,6 +155,7 @@ bool Scheduler::updateSucessorForces(Block* block, bool print){
             Node * startNode = nullptr;
             successorQueue = generateSuccessorQueue(block,i);
             float tempForce = 0.0;
+            // only push successors' force when in current node's timeframe
             if(j>=currentNode->asapTime && j<=currentNode->alapTime){
                 int nowTime = j;
                 while(successorQueue.size()!=0){
@@ -190,7 +191,10 @@ bool Scheduler::updateSucessorForces(Block* block, bool print){
                         else{
                             nowTime++;
                         }
-                        tempForce += startNode->forceData.selfForces.at(nowTime);
+
+                        if(nowTime >= 1 && nowTime <= block->timeConstraint){
+                            tempForce += startNode->forceData.selfForces.at(nowTime);
+                        }
                         
                         if(hasSameCycle){
                             nowTime = restoreTime;
@@ -203,7 +207,7 @@ bool Scheduler::updateSucessorForces(Block* block, bool print){
                     }
                 }
                 currentNode->forceData.successorForces.push_back(tempForce);
-            }
+            } 
             else{
                 currentNode->forceData.successorForces.push_back(0.0);
             }
