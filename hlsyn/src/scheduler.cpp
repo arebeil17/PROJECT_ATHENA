@@ -19,7 +19,7 @@ bool Scheduler::forceDirectedScheduling(Block* block){
     while(fdsNotDone){
 		if (updateTimeFrame(block)) {
 			//For testing
-			//block->printSchedulingInfo();
+			block->printSchedulingInfo();
 			updateDistributions(block, PRINT_ENABLED);
 			updateSelfForce(block, PRINT_ENABLED);
 			updatePredecessorForces(block, PRINT_ENABLED);
@@ -100,6 +100,14 @@ bool Scheduler::updateDistributions(Block* block, bool print){
 		}
 		cout << endl;
 		cout << "--------------------------------------------------------------------------" << endl;
+        cout << "--------------------------------------------------------------------------" << endl;
+		cout << "divDG: ";
+		for (int i = 1; i <= block->timeConstraint; i++) {
+			cout << "	" << divModDistribution.at(i);
+		}
+		cout << endl;
+		cout << "--------------------------------------------------------------------------" << endl;
+
 	}
     return true;
 }
@@ -590,6 +598,9 @@ bool Scheduler::asapSchedule(Block * block){
         //executing phase
         for(unsigned int i = 0; i< block->nodeVector.size();i++){
             bool nodeAvailable = true;
+            if(block->nodeVector.at(i)->executionTime > block->timeConstraint){
+                return false; //impossible time constraint
+            } 
             // if the node has been schedule, wait the schedule time
             nodeAvailable &= exec_cycle >= block->nodeVector.at(i)->scheduleTime;
             for(unsigned int j = 0; j< block->nodeVector.at(i)->inputs.size();j++){
@@ -604,8 +615,10 @@ bool Scheduler::asapSchedule(Block * block){
 				block->nodeVector.at(i)->nVisited = true;
 				newScheduled.push_back(block->nodeVector.at(i));
 				block->nodeVector.at(i)->asapTime = exec_cycle;
-				//Check for exceeded time constaint
-				if (block->timeConstraint < exec_cycle) return false;
+				//Check for exceeded time constraint
+				if ((block->timeConstraint < exec_cycle) ||
+                    ((block->nodeVector.at(i)->executionTime + exec_cycle - 1) > block->timeConstraint)
+                    ) return false;
 
                 if(block->nodeVector.at(i)->op=="MUL"){
                     block->nodeVector.at(i)->nAsapCount++;

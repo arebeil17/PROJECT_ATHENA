@@ -51,7 +51,8 @@ return (givenTime>=asapTime&&givenTime<=alapTime);
 //Compute and Update Frame Width
 void Node::updateFrameParams(){
 	forceData.frameWidth = 1+ alapTime - asapTime;
-	forceData.probabilities.push_back(0.0); //dummy push, start from vector 1
+	forceData.probabilities.clear();
+    forceData.probabilities.push_back(0.0); //dummy push, start from vector 1
     for(int i =1; i<=timeConstraint; i++){
         if(i <= alapTime && i>= asapTime){
             forceData.probabilities.push_back(1.0/forceData.frameWidth);
@@ -103,7 +104,11 @@ void Node::updateSelfForces(vector<float> aluDistribution, vector<float> multDis
             }
         }
         if(i>=asapTime&&i<=alapTime){   //within timeframe
-            forceData.selfForces.push_back(tempForce);
+            //if(-0.000001<tempForce && tempForce<0.000001){
+            //    forceData.selfForces.push_back(tempForce);
+                //tempForce = 0.0; 
+            //}
+            forceData.selfForces.push_back((float)tempForce);
         }
         else{           // outside timeframe
             forceData.selfForces.push_back(0.0);
