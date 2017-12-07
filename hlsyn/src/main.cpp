@@ -40,14 +40,18 @@ int main(int argc, char *argv[]) {
 				//datapath.printAll(true);
                 
                 Synthesis synthesis(stoi(argv[2]), input.netlistLines, &(datapath.nodeListVector));
-                synthesis.makeBlocks();
+				//Check if for loop detected, makeBlocks returns false
+				if (!synthesis.makeBlocks()) {
+					cout << "\nNetlist files with for loops are not supported. Aborted state machine output." << endl;
+					return -1; //Abort execution
+				}
 				synthesis.setAllBlockPointers();
 				synthesis.setBlockConstraint(stoi(argv[2]));
 			
                 //Check for branching netlist
 				if (synthesis.blockVector.size() > 2) {
-					cout << "\nBranching netlist files not supported. Aborted State Machine output." << endl;
-					return -1;
+					cout << "\nBranching netlist files not supported. Aborted state machine output." << endl;
+					return -1; //Abort execution
 				}
                 Scheduler scheduler = Scheduler();
                 for(unsigned int i = 0; i<synthesis.blockVector.size(); i++){
@@ -70,7 +74,7 @@ int main(int argc, char *argv[]) {
 					cout << "\nError. State Machine not generated." << endl;
 			}
 			else {
-				cout << "\nError found in netlist file at line " << to_string(datapath.currentLine + 1)<<". Aborted netlist conversion." << endl;
+				cout << "\nError or unsupported netlist found at line " << to_string(datapath.currentLine + 1)<<". Aborted netlist conversion." << endl;
 				return -1;
 			}
 		} //Empty input file provided

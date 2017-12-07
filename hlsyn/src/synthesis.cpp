@@ -116,7 +116,10 @@ bool Synthesis::parseBlocksNodes(Block* currentBlock, unsigned int currentLevel)
             currentLine++;
             // recursion return
             return true;
-        }
+		}//Checking for unsupported for loops
+		else if ((nowParsingText.substr(0, 5) == "for (")) {
+			return false; //abort synthesis
+		}
         else{
         currentLine++;
         // component parsing
@@ -198,9 +201,13 @@ void Synthesis::setAllBlockPointers(){
 /**************************************************************************************************/
 bool Synthesis::makeBlocks(){
     parseBlocks_prefix();
-    buildNextBlock(NULL, "top", 0,"");         // build top block 
-    parseBlocksNodes(blockVector.back(),0); //assign null pointer to top block's parent
-return true;
+    buildNextBlock(NULL, "top", 0,"");         // build top block
+	
+	//Check if parsing blocks failed, for loop condition detected
+	if (!parseBlocksNodes(blockVector.back(), 0)) //assign null pointer to top block's parent
+		return false;
+	
+	return true;
 }
 /**************************************************************************************************/
 void Synthesis::printBlocks(){

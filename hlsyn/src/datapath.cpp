@@ -104,8 +104,11 @@ bool Datapath::parseNetlistLines() {
 		currentLine = i; //for error checking
 		nowParsingText = netlistLines.at(i);
 		signedBit = true;
-		//Check if Input
-		if (nowParsingText.substr(0, 6) == "input ") {
+		//Check for For loop
+		if (nowParsingText.substr(0, 5) == "for (") {
+			return false;
+		}//Check if Input
+		else if (nowParsingText.substr(0, 6) == "input ") {
 			nowParsingText.erase(0, 6);
 			if (nowParsingText.at(0) == 'U') {
 				signedBit = false;
@@ -548,11 +551,12 @@ void Datapath::printCriticalPathInfo(bool full) {
 /**************************************************************************************************/
 //Print all information
 bool Datapath::printAll(bool all) {
+	if (all) {
 	//for debugging prints out file read 
 	for (unsigned int i = 0; i < netlistLines.size(); i++) {
 			cout << netlistLines.at(i) << endl;
 		}
-    if (all) {
+    
 		printNodeListVector();
 		printRootNodes();
 	}

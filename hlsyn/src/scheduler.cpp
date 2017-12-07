@@ -423,11 +423,12 @@ bool Scheduler::scheduleNode(Block* block){
 				//or was adjusted to avoid conflicts
 
 				minimumForceNode->scheduleTime = targetTime;
-				//if (PRINT_ENABLED) {
+				minimumForceNode->alapTime = targetTime;
+				if (PRINT_ENABLED || PRINT_SCHEDULE) {
 					cout << "\n**************************************************************************" << endl;
 					cout << "Scheduled Node: " << minimumForceNode->id << " in Time: " << minimumForceNode->scheduleTime << " Total Force: " << minimumForceNode->forceData.minTotalForce << endl;
 					cout << "**************************************************************************" << endl;
-				//}
+				}
 		}
 	
         //check if all nodes are scheduled
