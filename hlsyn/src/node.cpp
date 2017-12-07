@@ -103,11 +103,10 @@ void Node::updateSelfForces(vector<float> aluDistribution, vector<float> multDis
                 }
             }
         }
-        if(i>=asapTime&&i<=alapTime){   //within timeframe
-            //if(-0.000001<tempForce && tempForce<0.000001){
-            //    forceData.selfForces.push_back(tempForce);
-                //tempForce = 0.0; 
-            //}
+        if( (i >= asapTime) && (i <= alapTime)){   //within timeframe
+            if(fabs(tempForce) <0.000001){
+                tempForce = 0.0; 
+            }
             forceData.selfForces.push_back((float)tempForce);
         }
         else{           // outside timeframe

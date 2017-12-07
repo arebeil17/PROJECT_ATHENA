@@ -19,17 +19,17 @@ bool Scheduler::forceDirectedScheduling(Block* block){
     while(fdsNotDone){
 		if (updateTimeFrame(block)) {
 			//For testing
-			block->printSchedulingInfo();
+			if(PRINT_ENABLED) block->printSchedulingInfo();
 			updateDistributions(block, PRINT_ENABLED);
 			updateSelfForce(block, PRINT_ENABLED);
 			updatePredecessorForces(block, PRINT_ENABLED);
 			updateSucessorForces(block, PRINT_ENABLED);
 			scheduleNode(block);
-			block->printSchedulingInfo();
+			if(PRINT_ENABLED) block->printSchedulingInfo();
 		}
 		else {
 			fdsNotDone = false;
-			cout << "Impossible Time Constaint. Scheduling Aborted." << endl;
+			cout << "Impossible Time Constraint. Scheduling Aborted." << endl;
 			return false;
 		}
     };
@@ -301,7 +301,10 @@ bool Scheduler::updatePredecessorForces(Block* block, bool print){
                         else{
                             nowTime--;
                         }
-                        tempForce += startNode->forceData.selfForces.at(nowTime);
+
+						if (nowTime >= 1 && nowTime <= block->timeConstraint) {
+							tempForce += startNode->forceData.selfForces.at(nowTime);
+						}
                         
                         if(hasSameCycle){
                             nowTime = restoreTime;
