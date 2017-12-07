@@ -43,8 +43,12 @@ int main(int argc, char *argv[]) {
                 synthesis.makeBlocks();
 				synthesis.setAllBlockPointers();
 				synthesis.setBlockConstraint(stoi(argv[2]));
-				//synthesis.printBlocks();
-                
+			
+                //Check for branching netlist
+				if (synthesis.blockVector.size() > 2) {
+					cout << "\nBranching netlist files not supported. Aborted State Machine output." << endl;
+					return -1;
+				}
                 Scheduler scheduler = Scheduler();
                 for(unsigned int i = 0; i<synthesis.blockVector.size(); i++){
                     if(synthesis.blockVector.at(i)->type=="component"){
