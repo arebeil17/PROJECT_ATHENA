@@ -127,7 +127,7 @@ bool Output::makeNets(){
             verilogText += "input \t"; 
         }
         else if(netListVector->at(i).type=="output"){
-            verilogText += "output \treg";  //Updated for assignment 3, added reg
+            verilogText += "output \treg ";  //Updated for assignment 3, added reg
         }
         else if(netListVector->at(i).type=="wire"){
             verilogText += "wire \t"; 
